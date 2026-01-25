@@ -3,13 +3,12 @@
 
 // get file info (hex)
 void getFileInfo(char *link) {
-  link = "/home/pintikoff/Code/emacs/hashImages/2by3.bmp";
   int headerSize = 14;
   int infoHeaderSize = 40;
 
   FILE *fp = fopen(link, "rb");
   if (!fp) {
-    perror("invalid file path");
+    perror("invalid file path\n");
     return;
   }
 
@@ -28,6 +27,9 @@ void getFileInfo(char *link) {
   unsigned char *bufferInfo = malloc(infoHeaderSize);
   fread(bufferInfo, 1, 40, fp);
 
+  unsigned char *bufferRgb = malloc(filesize - (headerSize + infoHeaderSize));
+  fread(bufferRgb, 1, (filesize - (headerSize + infoHeaderSize)), fp);
+
   //full hex-table
   for (int i = 0; i < filesize; i++) {
     printf("%02X", buffer[i]);
@@ -38,7 +40,7 @@ void getFileInfo(char *link) {
 
   printf("Header:\n");
   for (int i = 0; i < headerSize; i++) {
-    printf("%02X", bufferHead[i]);
+    printf("%02X ", bufferHead[i]);
     if (((i+1) % 16) == 0)
       printf("\n");
   }
@@ -46,29 +48,37 @@ void getFileInfo(char *link) {
 
   printf("Info-header:\n");
   for (int i = 0; i < infoHeaderSize; i++) {
-    printf("%02X", bufferInfo[i]);
+    printf("%02X ", bufferInfo[i]);
     if (((i+1) % 16) == 0)
       printf("\n");
   }
   printf("\n");
 
   printf("RGB:\n");
-  for (int i = infoHeaderSize; i < filesize; i++) {
-    printf("%02X", buffer[i]);
-    if (((i-infoHeaderSize+1) % 16) == 0)
+  for (int i = 0; i < (filesize - (headerSize + infoHeaderSize)); i++) {
+    printf("%d ", bufferRgb[i]);
+    if (((i+1) % 16) == 0)
       printf("\n");
   }
   printf("\n");
 
   fclose(fp);
+
+  free(buffer);
+  free(bufferHead);
+  free(bufferInfo);
+  free(bufferRgb);
 }
 
 //redact file
 
 int main() {
-  char link[100];
+  char *link;
   //printf("Enter a file path\n");
   //scanf("%s", link);
+
+  //link = "/home/pintikoff/Code/emacs/hashImages/2by3.bmp"; //linux
+  link = "C:/Users/petro/OneDrive/Documents/codeVS/C/bmpEditor/2by3.bmp"; //windows
   getFileInfo(link);
-  return 1;
+  return 0;
 }
