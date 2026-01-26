@@ -8,7 +8,7 @@ void getFileInfo(char *link) {
 
   FILE *fp = fopen(link, "rb");
   if (!fp) {
-    perror("invalid file path\n");
+    perror("invalid file path");
     return;
   }
 
@@ -17,22 +17,19 @@ void getFileInfo(char *link) {
   printf("%ld\n", filesize);
 
   rewind(fp);
-  unsigned char* buffer = malloc(filesize);
+  unsigned char *buffer = malloc(filesize);
   fread(buffer, 1, filesize, fp); // saves to buffer
   rewind(fp);
 
-  unsigned char* bufferHead = malloc(headerSize);
-  fread(bufferHead, 1, 14, fp); // saves to buffer
+  unsigned char *bufferHead = buffer;
 
-  unsigned char *bufferInfo = malloc(infoHeaderSize);
-  fread(bufferInfo, 1, 40, fp);
+  unsigned char *bufferInfo = buffer + 14;
 
-  unsigned char *bufferRgb = malloc(filesize - (headerSize + infoHeaderSize));
-  fread(bufferRgb, 1, (filesize - (headerSize + infoHeaderSize)), fp);
+  unsigned char *bufferRgb = buffer + 54;
 
   //full hex-table
   for (int i = 0; i < filesize; i++) {
-    printf("%02X", buffer[i]);
+    printf("%02X ", buffer[i]);
     if (((i+1) % 16) == 0)
       printf("\n");
   }
@@ -40,7 +37,7 @@ void getFileInfo(char *link) {
 
   printf("Header:\n");
   for (int i = 0; i < headerSize; i++) {
-    printf("%02X ", bufferHead[i]);
+    printf("%d ", bufferHead[i]);
     if (((i+1) % 16) == 0)
       printf("\n");
   }
@@ -48,7 +45,7 @@ void getFileInfo(char *link) {
 
   printf("Info-header:\n");
   for (int i = 0; i < infoHeaderSize; i++) {
-    printf("%02X ", bufferInfo[i]);
+    printf("%d ", bufferInfo[i]);
     if (((i+1) % 16) == 0)
       printf("\n");
   }
@@ -64,10 +61,7 @@ void getFileInfo(char *link) {
 
   fclose(fp);
 
-  free(buffer);
-  free(bufferHead);
-  free(bufferInfo);
-  free(bufferRgb);
+  free(buffer);;
 }
 
 //redact file
