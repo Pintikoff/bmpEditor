@@ -2,8 +2,22 @@
 #include <string.h>
 #include <stdlib.h>
 
-// get file info (hex)
-void getFileInfo(char *link, int *width, int *height, unsigned char **rgb) {
+struct pixelStruct {
+    unsigned char r,g,b;
+};
+typedef struct pixelStruct Pixel;
+
+Pixel createPixel (unsigned char r, unsigned char g, unsigned char b){
+    Pixel newPixel = {
+        r,g,b
+    };
+    return newPixel;
+};
+
+
+
+// get file info
+void getFileInfo(char *link, int *width, int *height, unsigned char **rgb/*, unsigned char *rgbMatrix */) {
     int headerSize = 14;
     int infoHeaderSize = 40;
 
@@ -15,26 +29,26 @@ void getFileInfo(char *link, int *width, int *height, unsigned char **rgb) {
 
     fseek(fp, 0, SEEK_END);   //set a pos in file
     long filesize = ftell(fp); // get a position of file pointer
-    //printf("%ld\n", filesize);
-
     rewind(fp);
+
     unsigned char *buffer = malloc(filesize);
     fread(buffer, 1, filesize, fp); // saves to buffer
-    
     rewind(fp);
 
     unsigned char *bufferHead = buffer;
     unsigned char *bufferInfo = buffer + 14;
     unsigned char *bufferRgb = buffer + 54;
 
-    memcpy(width, bufferInfo + 4, 4);
-    memcpy(height, bufferInfo + 8, 4);
-
-    int pixelCount = *height * (*width+1);
+    memcpy(width, buffer + 18, 4);
+    memcpy(height, buffer + 22, 4);
 
     // rgb array
-    *rgb = malloc(pixelCount*3);
-    memcpy(*rgb, bufferRgb, pixelCount*3);
+    int padLength = 4 - ((*width * 3) % 4); //out: 3
+    int lineLength = (*width * 3) + padLength; //out 12
+    int pixelCountPad = lineLength * *height; //out 24
+
+    *rgb = malloc(pixelCountPad);
+    memcpy(*rgb, bufferRgb, pixelCountPad);
 
     //full hex-table
     for (int i = 0; i < filesize; i++) {
@@ -72,6 +86,8 @@ void getFileInfo(char *link, int *width, int *height, unsigned char **rgb) {
     free(buffer);
 }
 
+//options
+
 //redact file
 
 int main() {
@@ -79,13 +95,25 @@ int main() {
     int width, height;
     unsigned char *rgb;
 
-    //unsigned char *rgbMatrix[height][width][rgb];
+    //unsigned char *rgbMatrix[height][width][3];
     //printf("Enter a file path\n");
-    //scanf("%s", link);
+    //scanf("%s", link);  
 
     //link = "/home/pintikoff/Code/emacs/hashImages/2by3.bmp"; //linux
     link = "C:/Users/petro/OneDrive/Documents/codeVS/C/bmpEditor/2by3.bmp"; //windows
     getFileInfo(link, &width, &height, &rgb);
+
+    Pixel **map;
+    map = malloc(sizeof(Pixel*) * width);
+    for(int x = 0; x < width; x++){
+        map[x] = malloc(sizeof(Pixel) * height);
+        for(int y = 0; y < height; y++){
+            map[x][y] = createPixel(1, 1, 1);
+        }
+    }
+    Pixel x = createPixel(1,1,1);
+    printf("%d, %d, %d\n", x.r, x.g, x.b);
+    free(map);
     printf("width: %d, height: %d\n", width, height);
 
     free(rgb);
