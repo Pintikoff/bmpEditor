@@ -30,11 +30,12 @@ void getFileInfo(char *link, int *width, int *height, unsigned char **rgb) {
     memcpy(width, bufferInfo + 4, 4);
     memcpy(height, bufferInfo + 8, 4);
 
-    int pixelCount = *height * (*width+1);
+    int padLength = 4 - ((*width * 3) % 4); //out: 3
+    int lineLength = (*width * 3) + padLength; //out 12
+    int pixelCountPad = lineLength * *height; //out 24
 
-    // rgb array
-    *rgb = malloc(pixelCount*3);
-    memcpy(*rgb, bufferRgb, pixelCount*3);
+    *rgb = malloc(pixelCountPad);
+    memcpy(*rgb, bufferRgb, pixelCountPad);
 
     //full hex-table
     for (int i = 0; i < filesize; i++) {
