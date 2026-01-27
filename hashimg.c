@@ -3,7 +3,7 @@
 #include <stdlib.h>
 
 // get file info (hex)
-void getFileInfo(char *link, int *width, int *height) {
+void getFileInfo(char *link, int *width, int *height, unsigned char **rgb) {
     int headerSize = 14;
     int infoHeaderSize = 40;
 
@@ -29,6 +29,12 @@ void getFileInfo(char *link, int *width, int *height) {
 
     memcpy(width, bufferInfo + 4, 4);
     memcpy(height, bufferInfo + 8, 4);
+
+    int pixelCount = *height * (*width+1);
+
+    // rgb array
+    *rgb = malloc(pixelCount*3);
+    memcpy(*rgb, bufferRgb, pixelCount*3);
 
     //full hex-table
     for (int i = 0; i < filesize; i++) {
@@ -63,22 +69,25 @@ void getFileInfo(char *link, int *width, int *height) {
     printf("\n");
 
     fclose(fp);
-    free(buffer);;
+    free(buffer);
 }
 
 //redact file
 
 int main() {
     char *link;
-    int width;
-    int height;
+    int width, height;
+    unsigned char *rgb;
 
+    //unsigned char *rgbMatrix[height][width][rgb];
     //printf("Enter a file path\n");
     //scanf("%s", link);
 
     //link = "/home/pintikoff/Code/emacs/hashImages/2by3.bmp"; //linux
     link = "C:/Users/petro/OneDrive/Documents/codeVS/C/bmpEditor/2by3.bmp"; //windows
-    getFileInfo(link, &width, &height);
-    printf("width: %d, height: %d", width, height);
+    getFileInfo(link, &width, &height, &rgb);
+    printf("width: %d, height: %d\n", width, height);
+
+    free(rgb);
     return 0;
 }
