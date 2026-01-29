@@ -46,7 +46,7 @@ void outPutStructTemp(Header* header, InfoHeader* infoHeader){
     printf("  fileSize: %u bytes\n", header->fileSize);
     printf("  reserved: %u\n", header->reserved);
     printf("  dataOffset: %u\n", header->dataOffset);
-    
+
     printf("\nInfoHeader:\n");
     printf("  size: %u bytes\n", infoHeader->size);
     printf("  width: %u pixels\n", infoHeader->width);
@@ -68,21 +68,19 @@ void readHeader(char* link, Header* header,  InfoHeader* infoHeader) {
         return;
     }
     fseek(fp, 0, SEEK_END); //placing a pointer to an end
-    long fileSize = ftell(fp); //telling where is a pointer located 
-    rewind(fp); 
+    long fileSize = ftell(fp); //telling where is a pointer located
+    rewind(fp);
 
     uint8_t* buffer = malloc(fileSize);
     //reading every byte * fileSize in fp and saving to buffer
-    fread(buffer, 1, fileSize, fp); 
-
+    fread(buffer, 1, fileSize, fp);
     //copying buffer values into a header(header is a pointer)
     memcpy(header, buffer, sizeof(Header));
     memcpy(infoHeader, buffer+sizeof(Header), sizeof(InfoHeader));
-    printf("%02X ", header->signature);
 
     //printing file data
     for (int i = 0; i < fileSize; i++) {
-        printf("%02X ", buffer[i]);
+        printf("%03d ", buffer[i]);
         if (((i + 1) % 16) == 0)
         printf("\n");
     }
@@ -100,8 +98,8 @@ int main() {
     char* link;
     Header* header = malloc(sizeof(Header));
     InfoHeader* infoHeader = malloc(sizeof(InfoHeader));
-    //link = "/home/pintikoff/Code/emacs/hashImages/2by3.bmp"; // linux
-    link = "C:/Users/petro/OneDrive/Documents/codeVS/C/bmpEditor/2by3.bmp"; //windows
+    link = "/home/pintikoff/Code/emacs/hashImages/2by3.bmp"; // linux
+    //link = "C:/Users/petro/OneDrive/Documents/codeVS/C/bmpEditor/2by3.bmp"; //windows
 
     readHeader(link, header, infoHeader);
     outPutStructTemp(header, infoHeader);
