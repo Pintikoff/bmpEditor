@@ -76,7 +76,7 @@ uint8_t* readHeader(char* link, Header* header,  InfoHeader* infoHeader) {
     fread(buffer, 1, fileSize, fp);
     //copying buffer values into a header(header is a pointer)
     memcpy(header, buffer, sizeof(Header));
-    memcpy(infoHeader, buffer+sizeof(Header), sizeof(InfoHeader));
+    memcpy(infoHeader, buffer + sizeof(Header), sizeof(InfoHeader));
 
     //printing file data
     for (int i = 0; i < fileSize; i++) {
@@ -94,22 +94,14 @@ void readPixels(Header* header, InfoHeader* infoHeader, uint8_t* buffer) {
     int rowSize = infoHeader->width * 3;
     int padLength = 4 - (rowSize % 4);
     int lineLength = rowSize + padLength;
-    Pixel* pixels = malloc(infoHeader->height * infoHeader->width * sizeof(Pixel)); //1d array
-    printf("%zu\n", sizeof(Pixel));
-    memcpy(pixels, buffer + header->dataOffset, lineLength * infoHeader->width);
+    
+    Pixel* pixels = malloc(infoHeader->height * infoHeader->width * sizeof(Pixel)); //1d array;
+    memcpy(pixels, buffer + header->dataOffset, lineLength * infoHeader->height);
+
     for(int i = 0; i < 8; i++){
         printf("Pixel %d ", i+1);
         printf("R: %03d G: %03d: B: %03d \n", pixels[i].r, pixels[i].g, pixels[i].b);
     }
-
-    /*
-    for (int y = 0; y < infoHeader->height; y++){
-        for (int x = 0; x < infoHeader->width; x++) {
-
-        }
-    }
-    */
-    
 }
 
 int main() {
@@ -125,7 +117,6 @@ int main() {
     readPixels(header, infoHeader, buffer);
     free(buffer);
     return 0;
-    //Todo: save Pixel data into a 2d(technically 3d array)
 }
 
 
