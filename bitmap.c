@@ -15,7 +15,7 @@ struct InfoHeaderStruct {
     uint32_t size;            // size of InfoHeader
     uint32_t width;
     uint32_t height;
-    uint16_t planes;          // research
+    uint16_t planes;
     uint16_t bitePerPixel;
     uint32_t compression;
     uint32_t imageSize;
@@ -36,8 +36,8 @@ typedef struct InfoHeaderStruct InfoHeader;
 typedef struct PixelStruct Pixel;
 
 Pixel createPixelBGR(uint8_t r, uint8_t g, uint8_t b) {
-    Pixel p = {b, g, r};
-    return p;
+    Pixel px = {r, g, b};
+    return px;
 }
 
 void outPutStructTemp(Header* header, InfoHeader* infoHeader){
@@ -80,7 +80,7 @@ void readHeader(char* link, Header* header,  InfoHeader* infoHeader) {
 
     //printing file data
     for (int i = 0; i < fileSize; i++) {
-        printf("%03d ", buffer[i]);
+        printf("%02X ", buffer[i]);
         if (((i + 1) % 16) == 0)
         printf("\n");
     }
@@ -90,8 +90,15 @@ void readHeader(char* link, Header* header,  InfoHeader* infoHeader) {
     fclose(fp);
 }
 
-void readPixels() {
+void readPixels(Header* header, InfoHeader* infoHeader) {
+  uint8_t* buffer = malloc(header->fileSize);
+  Pixel* pixels = malloc(infoHeader->height * infoHeader->width * 3); //1d array
+  memcpy(pixels, buffer + header->dataOffset, *buffer - header->dataOffset );
+  for (int y = 0; y < infoHeader->height; y++){
+    for (int x = 0; x < infoHeader->width; x++) {
 
+    }
+  }
 }
 
 int main() {
@@ -103,6 +110,7 @@ int main() {
 
     readHeader(link, header, infoHeader);
     outPutStructTemp(header, infoHeader);
+    readPixels(header, infoHeader);
     return 0;
     //Todo: save Pixel data into a 2d(technically 3d array)
 }
