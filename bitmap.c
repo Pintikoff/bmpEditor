@@ -61,11 +61,11 @@ void outPutStructTemp(Header* header, InfoHeader* infoHeader){
     printf("  importantColors: %u\n", infoHeader->importantColors);
 }
 
-void readHeader(char* link, Header* header,  InfoHeader* infoHeader) {
+uint8_t* readHeader(char* link, Header* header,  InfoHeader* infoHeader) {
     FILE* fp = fopen(link, "rb");
     if (!fp) {
         perror("invalid file path");
-        return;
+        return NULL;
     }
     fseek(fp, 0, SEEK_END); //placing a pointer to an end
     long fileSize = ftell(fp); //telling where is a pointer located
@@ -86,31 +86,44 @@ void readHeader(char* link, Header* header,  InfoHeader* infoHeader) {
     }
     printf("\n");
 
-    free(buffer);
     fclose(fp);
+    return buffer;
 }
 
-void readPixels(Header* header, InfoHeader* infoHeader) {
-  uint8_t* buffer = malloc(header->fileSize);
-  Pixel* pixels = malloc(infoHeader->height * infoHeader->width * 3); //1d array
-  memcpy(pixels, buffer + header->dataOffset, *buffer - header->dataOffset );
-  for (int y = 0; y < infoHeader->height; y++){
-    for (int x = 0; x < infoHeader->width; x++) {
-
+void readPixels(Header* header, InfoHeader* infoHeader, uint8_t* buffer) {
+    int rowSize = infoHeader->width * 3;
+    int padLength = 4 - (rowSize % 4);
+    int lineLength = rowSize + padLength;
+    Pixel* pixels = malloc(infoHeader->height * infoHeader->width * sizeof(Pixel)); //1d array
+    printf("%zu\n", sizeof(Pixel));
+    memcpy(pixels, buffer + header->dataOffset, lineLength * infoHeader->width);
+    for(int i = 0; i < 8; i++){
+        printf("Pixel %d ", i+1);
+        printf("R: %03d G: %03d: B: %03d \n", pixels[i].r, pixels[i].g, pixels[i].b);
     }
-  }
+
+    /*
+    for (int y = 0; y < infoHeader->height; y++){
+        for (int x = 0; x < infoHeader->width; x++) {
+
+        }
+    }
+    */
+    
 }
 
 int main() {
     char* link;
+    //link = "/home/pintikoff/Code/emacs/hashImages/2by3.bmp"; // linux
+    link = "C:/Users/petro/OneDrive/Documents/codeVS/C/bmpEditor/2by3.bmp"; //windows
+
     Header* header = malloc(sizeof(Header));
     InfoHeader* infoHeader = malloc(sizeof(InfoHeader));
-    link = "/home/pintikoff/Code/emacs/hashImages/2by3.bmp"; // linux
-    //link = "C:/Users/petro/OneDrive/Documents/codeVS/C/bmpEditor/2by3.bmp"; //windows
 
-    readHeader(link, header, infoHeader);
+    uint8_t* buffer = readHeader(link, header, infoHeader);
     outPutStructTemp(header, infoHeader);
-    readPixels(header, infoHeader);
+    readPixels(header, infoHeader, buffer);
+    free(buffer);
     return 0;
     //Todo: save Pixel data into a 2d(technically 3d array)
 }
