@@ -130,8 +130,7 @@ Pixel** readPixels(Header *header, InfoHeader *infoHeader, uint8_t *buffer) {
     }
    */
 
-    // free pixels
-    // free pixelMap
+    free(pixels);
     return pixelMap;
 }
 
@@ -141,11 +140,12 @@ int main() {
     //link = "C:/Users/petro/OneDrive/Documents/codeVS/C/bmpEditor/2by3.bmp"; //windows
 
     Header* header = malloc(sizeof(Header));
-    InfoHeader* infoHeader = malloc(sizeof(InfoHeader));
+    InfoHeader *infoHeader = malloc(sizeof(InfoHeader));
 
     uint8_t* buffer = readHeader(link, header, infoHeader);
     outPutStructTemp(header, infoHeader);
-    Pixel** pixelMap = readPixels(header, infoHeader, buffer);
+    Pixel **pixelMap = readPixels(header, infoHeader, buffer);
+    free(pixelMap);
     free(buffer);
     return 0;
 }
