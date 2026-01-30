@@ -91,14 +91,24 @@ uint8_t* readHeader(char* link, Header* header,  InfoHeader* infoHeader) {
 }
 
 void readPixels(Header* header, InfoHeader* infoHeader, uint8_t* buffer) {
-    int rowSize = infoHeader->width * 3;
-    int padLength = 4 - (rowSize % 4);
-    printf("%d \n", padLength);
+    int rowSize = infoHeader->width * sizeof(Pixel);
+    int padLength = (4 - (rowSize % 4)) % 4;
     int lineLength = rowSize + padLength;
+    Pixel *pixels = malloc(rowSize * infoHeader->height); // 1d array;
+    int dst = 0;
+    uint8_t *src = buffer + header->dataOffset;
 
-    Pixel* pixels = malloc(rowSize * infoHeader->height); //1d array;
-    memcpy(pixels, buffer + header->dataOffset, rowSize * infoHeader->height);
-    for(int i = 0; i < (lineLength / 3)* infoHeader->height; i++){
+    for (int y = 0; y < infoHeader->height; y++) {
+      for (int x = 0; x < infoHeader->width; x++) {
+        pixels[dst].b = *src++; 
+        pixels[dst].g = *src++;
+        pixels[dst].r = *src++;
+        dst++;
+      }
+      src += padLength;  //change address
+    }
+    //memcpy(pixels, buffer + header->dataOffset, rowSize * infoHeader->height);
+    for(int i = 0; i < 6; i++){
         printf("Pixel %d ", i+1);
         printf("R: %03d G: %03d: B: %03d \n", pixels[i].r, pixels[i].g, pixels[i].b);
     }
@@ -106,8 +116,8 @@ void readPixels(Header* header, InfoHeader* infoHeader, uint8_t* buffer) {
 
 int main() {
     char* link;
-    //link = "/home/pintikoff/Code/emacs/hashImages/2by3.bmp"; // linux
-    link = "C:/Users/petro/OneDrive/Documents/codeVS/C/bmpEditor/2by3.bmp"; //windows
+    link = "/home/pintikoff/Code/emacs/hashImages/2by3.bmp"; // linux
+    //link = "C:/Users/petro/OneDrive/Documents/codeVS/C/bmpEditor/2by3.bmp"; //windows
 
     Header* header = malloc(sizeof(Header));
     InfoHeader* infoHeader = malloc(sizeof(InfoHeader));
@@ -118,5 +128,3 @@ int main() {
     free(buffer);
     return 0;
 }
-
-
