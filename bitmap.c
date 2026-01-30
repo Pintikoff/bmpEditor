@@ -91,7 +91,7 @@ uint8_t* readHeader(char* link, Header* header,  InfoHeader* infoHeader) {
     return buffer;
 }
 
-void readPixels(Header *header, InfoHeader *infoHeader, uint8_t *buffer) {
+Pixel** readPixels(Header *header, InfoHeader *infoHeader, uint8_t *buffer) {
   uint32_t width = infoHeader->width;
   uint32_t height = infoHeader->height;
 
@@ -118,7 +118,7 @@ void readPixels(Header *header, InfoHeader *infoHeader, uint8_t *buffer) {
     for (int y = 0; y < height; y++) {
       for (int x = 0; x < width; x++) {
         pixelMap[y][x] = pixels[i];
-        printf("Rd: %03d G: %03d: B: %03d \n", pixelMap[y][x].r, pixelMap[y][x].g, pixelMap[y][x].b);
+        printf("R: %03d G: %03d: B: %03d \n", pixelMap[y][x].r, pixelMap[y][x].g, pixelMap[y][x].b);
         i++;
       }
     }
@@ -128,10 +128,11 @@ void readPixels(Header *header, InfoHeader *infoHeader, uint8_t *buffer) {
         printf("R: %03d G: %03d: B: %03d \n", pixels[i].r, pixels[i].g,
     pixels[i].b);
     }
-*/
+   */
 
     // free pixels
     // free pixelMap
+    return pixelMap;
 }
 
 int main() {
@@ -142,9 +143,9 @@ int main() {
     Header* header = malloc(sizeof(Header));
     InfoHeader* infoHeader = malloc(sizeof(InfoHeader));
 
-    uint8_t *buffer = readHeader(link, header, infoHeader);
+    uint8_t* buffer = readHeader(link, header, infoHeader);
     outPutStructTemp(header, infoHeader);
-    readPixels(header, infoHeader, buffer);
+    Pixel** pixelMap = readPixels(header, infoHeader, buffer);
     free(buffer);
     return 0;
 }
