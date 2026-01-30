@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <wctype.h>
 
 #pragma pack(1)
 struct HeaderStruct {
@@ -94,20 +95,28 @@ void readPixels(Header* header, InfoHeader* infoHeader, uint8_t* buffer) {
     int rowSize = infoHeader->width * sizeof(Pixel);
     int padLength = (4 - (rowSize % 4)) % 4;
     int lineLength = rowSize + padLength;
-    Pixel *pixels = malloc(rowSize * infoHeader->height); // 1d array;
+    Pixel* pixels = malloc(rowSize * infoHeader->height); // 1d array;
     int dst = 0;
-    uint8_t *src = buffer + header->dataOffset;
+    uint8_t* src = buffer + header->dataOffset;
 
     for (int y = 0; y < infoHeader->height; y++) {
-      for (int x = 0; x < infoHeader->width; x++) {
-        pixels[dst].b = *src++; 
-        pixels[dst].g = *src++;
-        pixels[dst].r = *src++;
-        dst++;
-      }
-      src += padLength;  //change address
+      memcpy(pixels + (y * infoHeader->width), src, rowSize);
+      src += rowSize + padLength;
     }
-    //memcpy(pixels, buffer + header->dataOffset, rowSize * infoHeader->height);
+    /*
+      for (int y = 0; y < infoHeader->height; y++) {
+        for (int x = 0; x < infoHeader->width; x++) {
+          pixels[dst].b = *src++;
+          pixels[dst].g = *src++;
+          pixels[dst].r = *src++;
+          dst++;
+        }
+        src += padLength;  //change address
+      }
+
+     */
+    // memcpy(pixels, buffer + header->dataOffset, rowSize *
+    // infoHeader->height);
     for(int i = 0; i < 6; i++){
         printf("Pixel %d ", i+1);
         printf("R: %03d G: %03d: B: %03d \n", pixels[i].r, pixels[i].g, pixels[i].b);
