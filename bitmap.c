@@ -96,8 +96,8 @@ void readPixels(Header* header, InfoHeader* infoHeader, uint8_t* buffer) {
     printf("%d \n", padLength);
     int lineLength = rowSize + padLength;
 
-    Pixel* pixels = malloc(infoHeader->height * infoHeader->width * sizeof(Pixel)); //1d array;
-    memcpy(pixels, buffer + header->dataOffset, lineLength * infoHeader->height);
+    Pixel* pixels = malloc(rowSize * infoHeader->height); //1d array;
+    memcpy(pixels, buffer + header->dataOffset, rowSize * infoHeader->height);
     for(int i = 0; i < (lineLength / 3)* infoHeader->height; i++){
         printf("Pixel %d ", i+1);
         printf("R: %03d G: %03d: B: %03d \n", pixels[i].r, pixels[i].g, pixels[i].b);
