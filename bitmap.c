@@ -91,36 +91,47 @@ uint8_t* readHeader(char* link, Header* header,  InfoHeader* infoHeader) {
     return buffer;
 }
 
-void readPixels(Header* header, InfoHeader* infoHeader, uint8_t* buffer) {
-    int rowSize = infoHeader->width * sizeof(Pixel);
+void readPixels(Header *header, InfoHeader *infoHeader, uint8_t *buffer) {
+  uint32_t width = infoHeader->width;
+  uint32_t height = infoHeader->height;
+
+    int rowSize = width * sizeof(Pixel);
     int padLength = (4 - (rowSize % 4)) % 4;
     int lineLength = rowSize + padLength;
-    Pixel* pixels = malloc(rowSize * infoHeader->height); // 1d array;
+
     int dst = 0;
     uint8_t* src = buffer + header->dataOffset;
 
-    for (int y = 0; y < infoHeader->height; y++) {
-      memcpy(pixels + (y * infoHeader->width), src, rowSize);
+    //creating an array of PIXELS without padding and putting values in it
+    Pixel *pixels = malloc(rowSize * height);
+    for (int y = 0; y < height; y++) {
+      memcpy(pixels + (y * width), src, rowSize);
       src += rowSize + padLength;
     }
-    /*
-      for (int y = 0; y < infoHeader->height; y++) {
-        for (int x = 0; x < infoHeader->width; x++) {
-          pixels[dst].b = *src++;
-          pixels[dst].g = *src++;
-          pixels[dst].r = *src++;
-          dst++;
-        }
-        src += padLength;  //change address
+    //creating 2d array of pixels
+    Pixel **pixelMap = malloc(height * sizeof(Pixel*)); //size of datatype "Pixel"
+    for (int y = 0; y < height; y++) {
+      pixelMap[y] = malloc(width * sizeof(Pixel));
+    }
+    //filling up 2d array with pixels from 1d array
+    int i = 0;
+    for (int y = 0; y < height; y++) {
+      for (int x = 0; x < width; x++) {
+        pixelMap[y][x] = pixels[i];
+        printf("Rd: %03d G: %03d: B: %03d \n", pixelMap[y][x].r, pixelMap[y][x].g, pixelMap[y][x].b);
+        i++;
       }
-
-     */
-    // memcpy(pixels, buffer + header->dataOffset, rowSize *
-    // infoHeader->height);
+    }
+    /*
     for(int i = 0; i < 6; i++){
         printf("Pixel %d ", i+1);
-        printf("R: %03d G: %03d: B: %03d \n", pixels[i].r, pixels[i].g, pixels[i].b);
+        printf("R: %03d G: %03d: B: %03d \n", pixels[i].r, pixels[i].g,
+    pixels[i].b);
     }
+*/
+
+    // free pixels
+    // free pixelMap
 }
 
 int main() {
@@ -131,7 +142,7 @@ int main() {
     Header* header = malloc(sizeof(Header));
     InfoHeader* infoHeader = malloc(sizeof(InfoHeader));
 
-    uint8_t* buffer = readHeader(link, header, infoHeader);
+    uint8_t *buffer = readHeader(link, header, infoHeader);
     outPutStructTemp(header, infoHeader);
     readPixels(header, infoHeader, buffer);
     free(buffer);
