@@ -2,7 +2,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <wctype.h>
 
 #pragma pack(1)
 struct HeaderStruct {
@@ -92,8 +91,8 @@ uint8_t* readHeader(char* link, Header* header,  InfoHeader* infoHeader) {
 }
 
 Pixel** readPixels(Header *header, InfoHeader *infoHeader, uint8_t *buffer) {
-  uint32_t width = infoHeader->width;
-  uint32_t height = infoHeader->height;
+    uint32_t width = infoHeader->width;
+    uint32_t height = infoHeader->height;
 
     int rowSize = width * sizeof(Pixel);
     int padLength = (4 - (rowSize % 4)) % 4;
@@ -105,22 +104,22 @@ Pixel** readPixels(Header *header, InfoHeader *infoHeader, uint8_t *buffer) {
     //creating an array of PIXELS without padding and putting values in it
     Pixel *pixels = malloc(rowSize * height);
     for (int y = 0; y < height; y++) {
-      memcpy(pixels + (y * width), src, rowSize);
-      src += rowSize + padLength;
+    memcpy(pixels + (y * width), src, rowSize);
+    src += rowSize + padLength;
     }
     //creating 2d array of pixels
     Pixel **pixelMap = malloc(height * sizeof(Pixel*)); //size of datatype "Pixel"
     for (int y = 0; y < height; y++) {
-      pixelMap[y] = malloc(width * sizeof(Pixel));
+    pixelMap[y] = malloc(width * sizeof(Pixel));
     }
     //filling up 2d array with pixels from 1d array
     int i = 0;
     for (int y = 0; y < height; y++) {
-      for (int x = 0; x < width; x++) {
+    for (int x = 0; x < width; x++) {
         pixelMap[y][x] = pixels[i];
         printf("R: %03d G: %03d: B: %03d \n", pixelMap[y][x].r, pixelMap[y][x].g, pixelMap[y][x].b);
         i++;
-      }
+    }
     }
     /*
     for(int i = 0; i < 6; i++){
@@ -128,11 +127,21 @@ Pixel** readPixels(Header *header, InfoHeader *infoHeader, uint8_t *buffer) {
         printf("R: %03d G: %03d: B: %03d \n", pixels[i].r, pixels[i].g,
     pixels[i].b);
     }
-   */
+*/
 
     free(pixels);
     return pixelMap;
 }
+
+// vertical mirror
+
+//horizontal mirror
+
+//rotate: 90 180 270
+
+//frame: user can give width and color of a frame
+
+//zooom: x2 x0.5
 
 int main() {
     char* link;
