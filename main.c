@@ -1,0 +1,58 @@
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include "mbp_structs.h"
+#include "mbp_read.h"
+
+Pixel createPixelBGR(uint8_t r, uint8_t g, uint8_t b) {
+    Pixel px = {r, g, b};
+    return px;
+}
+
+void outPutStructTemp(Header* header, InfoHeader* infoHeader){
+    printf("Header:\n");
+    printf("  signature: 0x%04X\n", header->signature);
+    printf("  fileSize: %u bytes\n", header->fileSize);
+    printf("  reserved: %u\n", header->reserved);
+    printf("  dataOffset: %u\n", header->dataOffset);
+
+    printf("\nInfoHeader:\n");
+    printf("  size: %u bytes\n", infoHeader->size);
+    printf("  width: %u pixels\n", infoHeader->width);
+    printf("  height: %u pixels\n", infoHeader->height);
+    printf("  planes: %u\n", infoHeader->planes);
+    printf("  bitsPerPixel: %u\n", infoHeader->bitePerPixel);
+    printf("  compression: %u\n", infoHeader->compression);
+    printf("  imageSize: %u bytes\n", infoHeader->imageSize);
+    printf("  XpixelsPerM: %u\n", infoHeader->XpixelsPerM);
+    printf("  YpixelsPerM: %u\n", infoHeader->YpixelsPerM);
+    printf("  colorsUsed: %u\n", infoHeader->colorsUsed);
+    printf("  importantColors: %u\n", infoHeader->importantColors);
+}
+
+// vertical mirror
+
+//horizontal mirror
+
+//rotate: 90 180 270
+
+//frame: user can give width and color of a frame
+
+//zooom: x2 x0.5
+
+int main() {
+    char* link;
+    //link = "/home/pintikoff/Code/emacs/hashImages/2by3.bmp"; // linux
+    link = "C:/Users/petro/OneDrive/Documents/codeVS/C/bmpEditor/2by3.bmp"; //windows
+
+    Header* header = malloc(sizeof(Header));
+    InfoHeader *infoHeader = malloc(sizeof(InfoHeader));
+
+    uint8_t* buffer = readHeader(link, header, infoHeader);
+    outPutStructTemp(header, infoHeader);
+    Pixel **pixelMap = readPixels(header, infoHeader, buffer);
+    free(pixelMap);
+    free(buffer);
+    return 0;
+}
