@@ -45,10 +45,11 @@ int main() {
     outPutStructTemp(header, infoHeader);
 
     Pixel **pixelMap = readPixels(header, infoHeader, buffer);
-    //option 1
+    //Mirror 1
     //mirrorX(header, infoHeader, pixelMap);
-    //option 2 
+    //Mirror 2
     mirrorY(header, infoHeader, pixelMap);
+    outputPixels(infoHeader, pixelMap);
     free(pixelMap);
     free(buffer);
     return 0;
