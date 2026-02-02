@@ -33,16 +33,6 @@ void outPutStructTemp(Header* header, InfoHeader* infoHeader){
     printf("  importantColors: %u\n", infoHeader->importantColors);
 }
 
-// vertical mirror
-
-//horizontal mirror
-
-//rotate: 90 180 270
-
-//frame: user can give width and color of a frame
-
-//zooom: x2 x0.5
-
 int main() {
     char* link;
     //link = "/home/pintikoff/Code/emacs/hashImages/2by3.bmp"; // linux
@@ -55,8 +45,10 @@ int main() {
     outPutStructTemp(header, infoHeader);
 
     Pixel **pixelMap = readPixels(header, infoHeader, buffer);
-    Pixel **pixelMap = mirrorX(header, infoHeader, pixelMap);
-    
+    //option 1
+    //mirrorX(header, infoHeader, pixelMap);
+    //option 2 
+    mirrorY(header, infoHeader, pixelMap);
     free(pixelMap);
     free(buffer);
     return 0;
