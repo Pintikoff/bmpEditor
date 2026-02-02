@@ -1,5 +1,5 @@
 #include <stdint.h>
-#include "mbp_structs.h"
+#include "bmp_structs.h"
 
 #ifndef MBP_READ_H
 #define MBP_READ_H

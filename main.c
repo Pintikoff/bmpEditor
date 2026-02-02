@@ -2,8 +2,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "mbp_structs.h"
-#include "mbp_read.h"
+
+#include "bmp_structs.h"
+#include "bmp_read.h"
+#include "bmp_edit.h"
 
 Pixel createPixelBGR(uint8_t r, uint8_t g, uint8_t b) {
     Pixel px = {r, g, b};
@@ -51,7 +53,10 @@ int main() {
 
     uint8_t* buffer = readHeader(link, header, infoHeader);
     outPutStructTemp(header, infoHeader);
+
     Pixel **pixelMap = readPixels(header, infoHeader, buffer);
+    Pixel **pixelMap = mirrorX(header, infoHeader, pixelMap);
+    
     free(pixelMap);
     free(buffer);
     return 0;

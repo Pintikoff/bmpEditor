@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "mbp_structs.h"
+#include "bmp_structs.h"
 
 uint8_t* readHeader(char* link, Header* header,  InfoHeader* infoHeader) {
     FILE* fp = fopen(link, "rb");
@@ -47,22 +47,22 @@ Pixel** readPixels(Header *header, InfoHeader *infoHeader, uint8_t *buffer) {
     //creating an array of PIXELS without padding and putting values in it
     Pixel *pixels = malloc(rowSize * height);
     for (int y = 0; y < height; y++) {
-    memcpy(pixels + (y * width), src, rowSize);
-    src += rowSize + padLength;
+        memcpy(pixels + (y * width), src, rowSize);
+        src += rowSize + padLength;
     }
     //creating 2d array of pixels
     Pixel **pixelMap = malloc(height * sizeof(Pixel*)); //size of datatype "Pixel"
     for (int y = 0; y < height; y++) {
-    pixelMap[y] = malloc(width * sizeof(Pixel));
+        pixelMap[y] = malloc(width * sizeof(Pixel));
     }
     //filling up 2d array with pixels from 1d array
     int i = 0;
     for (int y = 0; y < height; y++) {
-    for (int x = 0; x < width; x++) {
-        pixelMap[y][x] = pixels[i];
-        printf("R: %03d G: %03d: B: %03d \n", pixelMap[y][x].r, pixelMap[y][x].g, pixelMap[y][x].b);
-        i++;
-    }
+        for (int x = 0; x < width; x++) {
+            pixelMap[y][x] = pixels[i];
+            printf("R: %03d G: %03d: B: %03d \n", pixelMap[y][x].r, pixelMap[y][x].g, pixelMap[y][x].b);
+            i++;
+        }
     }
     /*
     for(int i = 0; i < 6; i++){
