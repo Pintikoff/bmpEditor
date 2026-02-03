@@ -4,7 +4,9 @@
 #define MBP_EDIT_H
 
 void outputPixels(InfoHeader *infoHeader, Pixel** pixelMap);
-void mirrorX(Header *header, InfoHeader *infoHeader, Pixel** pixelMap);
-void mirrorY(Header *header, InfoHeader *infoHeader, Pixel** pixelMap);
-
+void mirrorX(InfoHeader *infoHeader, Pixel** pixelMap);
+void mirrorY(InfoHeader *infoHeader, Pixel** pixelMap);
+void rotate90(InfoHeader *infoHeader, Pixel** pixelMap);
+void rotate180(InfoHeader *infoHeader, Pixel** pixelMap);
+void rotate270(InfoHeader *infoHeader, Pixel** pixelMap);
 #endif

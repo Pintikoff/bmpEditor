@@ -60,7 +60,6 @@ Pixel** readPixels(Header *header, InfoHeader *infoHeader, uint8_t *buffer) {
     for (int y = 0; y < height; y++) {
         for (int x = 0; x < width; x++) {
             pixelMap[y][x] = pixels[i];
-            printf("R: %03d G: %03d: B: %03d \n", pixelMap[y][x].r, pixelMap[y][x].g, pixelMap[y][x].b);
             i++;
         }
     }
@@ -74,4 +73,12 @@ Pixel** readPixels(Header *header, InfoHeader *infoHeader, uint8_t *buffer) {
 
     free(pixels);
     return pixelMap;
+}
+
+void freePixelMap(InfoHeader* infoHeader,Pixel** pixelMap){
+    int height = infoHeader->height;
+    for(int y = 0; y < height; y++ ){
+        free(pixelMap[y]);
+    }
+    free(pixelMap);
 }

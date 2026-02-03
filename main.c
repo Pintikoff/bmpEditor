@@ -42,15 +42,17 @@ int main() {
     InfoHeader *infoHeader = malloc(sizeof(InfoHeader));
 
     uint8_t* buffer = readHeader(link, header, infoHeader);
-    outPutStructTemp(header, infoHeader);
 
     Pixel **pixelMap = readPixels(header, infoHeader, buffer);
     //Mirror 1
     //mirrorX(header, infoHeader, pixelMap);
     //Mirror 2
-    mirrorY(header, infoHeader, pixelMap);
+    //mirrorY(infoHeader, pixelMap);
+    rotate90(infoHeader,pixelMap);
+    outPutStructTemp(header, infoHeader);
     outputPixels(infoHeader, pixelMap);
-    free(pixelMap);
+    
+    freePixelMap(infoHeader, pixelMap);
     free(buffer);
     return 0;
 }
