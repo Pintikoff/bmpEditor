@@ -100,6 +100,11 @@ void rotate270(InfoHeader *infoHeader, Pixel*** pixelMap){
     infoHeader->height = width;
 }
 
+void snapImage(InfoHeader *infoHeader, Pixel **pixelMap, int startX, int startY, int endX, int endY) {
+  uint32_t width = infoHeader->width;
+  uint32_t height = infoHeader->height;
+}
+
 //frame: user can give width and color of a frame
 
 //zooom: x2 x0.5

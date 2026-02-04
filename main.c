@@ -44,13 +44,13 @@ int main() {
     uint8_t* buffer = readHeader(link, header, infoHeader);
 
     Pixel **pixelMap = readPixels(header, infoHeader, buffer);
-    //Mirror 1
+    #pragma pack(pop)
+
     //mirrorX(header, infoHeader, pixelMap);
-    //Mirror 2
     //mirrorY(infoHeader, pixelMap);
-    // rotate90(infoHeader, &pixelMap);
-    rotate180(infoHeader, pixelMap);
-    // rotate270(infoHeader,&pixelMap);
+    //rotate90(infoHeader, &pixelMap);
+    //rotate180(infoHeader, pixelMap);
+    //rotate270(infoHeader,&pixelMap);
     outPutStructTemp(header, infoHeader);
     outputPixels(infoHeader, pixelMap);
 

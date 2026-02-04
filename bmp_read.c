@@ -28,7 +28,6 @@ uint8_t* readHeader(char* link, Header* header,  InfoHeader* infoHeader) {
         printf("\n");
     }
     printf("\n");
-
     fclose(fp);
     return buffer;
 }

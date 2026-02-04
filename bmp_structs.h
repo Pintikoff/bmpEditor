@@ -34,5 +34,5 @@ struct PixelStruct {
 typedef struct HeaderStruct Header;
 typedef struct InfoHeaderStruct InfoHeader;
 typedef struct PixelStruct Pixel;
-
+#pragma pack()
 #endif
