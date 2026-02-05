@@ -46,11 +46,12 @@ int main() {
     Pixel **pixelMap = readPixels(header, infoHeader, buffer);
     #pragma pack(pop)
 
-    //mirrorX(header, infoHeader, pixelMap);
-    //mirrorY(infoHeader, pixelMap);
-    //rotate90(infoHeader, &pixelMap);
-    //rotate180(infoHeader, pixelMap);
-    //rotate270(infoHeader,&pixelMap);
+    // mirrorX(header, infoHeader, pixelMap);
+    // mirrorY(infoHeader, pixelMap);
+    // rotate90(infoHeader, &pixelMap);
+    // rotate180(infoHeader, pixelMap);
+    // rotate270(infoHeader,&pixelMap);
+    // snapImage(infoHeader, &pixelMap, 1, 1, 3, 2)
     outPutStructTemp(header, infoHeader);
     outputPixels(infoHeader, pixelMap);
 

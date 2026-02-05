@@ -9,5 +9,6 @@ void mirrorY(InfoHeader *infoHeader, Pixel** pixelMap);
 
 void rotate90(InfoHeader *infoHeader, Pixel*** pixelMap);
 void rotate180(InfoHeader *infoHeader, Pixel** pixelMap);
-void rotate270(InfoHeader *infoHeader, Pixel*** pixelMap);
-#endif
+void rotate270(InfoHeader *infoHeader, Pixel ***pixelMap);
+void snapImage(InfoHeader *infoHeader, Pixel ***pixelMap, int startX, int startY, int endX, int endY);
+#endif 
