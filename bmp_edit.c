@@ -101,48 +101,50 @@ void rotate270(InfoHeader *infoHeader, Pixel*** pixelMap){
 }
 
 void snapImage(InfoHeader *infoHeader, Pixel ***pixelMap, int startX, int startY, int endX, int endY) {
-  uint32_t width = infoHeader->width;
-  uint32_t height = infoHeader->height;
-  startX = width - startX;
-  startY = height - startY;
-  endX = width - endX;
-  endY = height - endY;
-
-  if (endX > startX) {
-    int tempX;
-    tempX = startX;
-    startX = endX;
-    endX = tempX;
-  }
-  if (endY > startY) {
-    int tempY;
-    tempY = startY;
-    startY = endY;
-    endY = tempY;
-  }
-
-  int newHeight = endY - startY;
-  int newWidth = endX - startX;
-  //creating newPixelMap
-  Pixel **newPixelMap = malloc(newHeight * sizeof(Pixel*));
-  for (int i = 0; i < newHeight; i++) {
-    newPixelMap[i] = malloc(newWidth * sizeof(Pixel*));
-  }
-  //copying snaped pixelMap into a newPixelMap
-  for (int y = 0; y < newHeight; y++) {
-    for (int x = 0; x < newWidth; x++) {
-      newPixelMap[y][x] = (*pixelMap)[startY + y][startX + x];
+    uint32_t width = infoHeader->width;
+    uint32_t height = infoHeader->height;
+    //rotating
+    startY = height - startY - 1;
+    endY = height - endY - 1;
+    //swap
+    if (endX < startX) {
+        int tempX;
+        tempX = startX;
+        startX = endX;
+        endX = tempX;
     }
-  }
-  //free old pixelMap
-  for (int i = 0; i < newHeight; i++) {
-    free((*pixelMap)[i]);
-  }
-  free(*pixelMap);
+    if (endY < startY) {
+        int tempY;
+        tempY = startY;
+        startY = endY;
+        endY = tempY;
+    }
+    //determine new size
+    int newHeight = endY - startY + 1;
+    int newWidth = endX - startX + 1;
 
-  *pixelMap = newPixelMap;
-  infoHeader->height = newHeight;
-  infoHeader->width = newWidth;
+    //create newPixelMap
+    Pixel **newPixelMap = malloc(newHeight * sizeof(Pixel*));
+    for (int i = 0; i < newHeight; i++) {
+        newPixelMap[i] = malloc(newWidth * sizeof(Pixel));
+    }
+
+    //copy snaped pixelMap into a newPixelMap
+    for (int y = 0; y < newHeight; y++) {
+        for (int x = 0; x < newWidth; x++) {
+            newPixelMap[y][x] = (*pixelMap)[startY + y][startX + x];
+        }
+    }
+
+    //free old pixelMap
+    for (int i = 0; i < height; i++) {
+        free((*pixelMap)[i]);
+    }
+    free(*pixelMap);
+
+    *pixelMap = newPixelMap;
+    infoHeader->height = newHeight;
+    infoHeader->width = newWidth;
 }
 
 //frame: user can give width and color of a frame

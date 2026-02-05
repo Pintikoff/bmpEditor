@@ -44,14 +44,13 @@ int main() {
     uint8_t* buffer = readHeader(link, header, infoHeader);
 
     Pixel **pixelMap = readPixels(header, infoHeader, buffer);
-    #pragma pack(pop)
 
     // mirrorX(header, infoHeader, pixelMap);
     // mirrorY(infoHeader, pixelMap);
     // rotate90(infoHeader, &pixelMap);
     // rotate180(infoHeader, pixelMap);
-    // rotate270(infoHeader,&pixelMap);
-    // snapImage(infoHeader, &pixelMap, 1, 1, 3, 2)
+    //rotate270(infoHeader,&pixelMap);
+    snapImage(infoHeader, &pixelMap, 0, 0, 2, 1);
     outPutStructTemp(header, infoHeader);
     outputPixels(infoHeader, pixelMap);
 
