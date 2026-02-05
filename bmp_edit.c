@@ -17,6 +17,29 @@ void outputPixels(InfoHeader *infoHeader, Pixel** pixelMap){
     }
 }
 
+Pixel** allocate2DPixelArray(int rows, int cols) {
+    Pixel **array = malloc(rows * sizeof(Pixel*));
+    if (array == NULL) {
+        perror("malloc failed for rows");
+        return NULL;
+    }
+    
+    for (int i = 0; i < rows; i++) {
+        array[i] = malloc(cols * sizeof(Pixel));
+        if (array[i] == NULL) {
+            perror("malloc failed for columns");
+            // Освободить уже выделенное
+            for (int j = 0; j < i; j++) {
+                free(array[j]);
+            }
+            free(array);
+            return NULL;
+        }
+    }
+    
+    return array;
+}
+
 // vertical mirror top -> bottom
 void mirrorX(InfoHeader *infoHeader, Pixel** pixelMap){
     uint32_t width = infoHeader->width;
@@ -103,6 +126,19 @@ void rotate270(InfoHeader *infoHeader, Pixel*** pixelMap){
 void snapImage(InfoHeader *infoHeader, Pixel ***pixelMap, int startX, int startY, int endX, int endY) {
     uint32_t width = infoHeader->width;
     uint32_t height = infoHeader->height;
+    //errors
+
+    if(startX < 0 || startY < 0 || endX < 0 || endY < 0){
+        printf("ERROR: Pixels coordinates are less then 0");
+        return;
+    }
+    if(startX > width || startY < height || endX < width || endY < height){
+        printf("ERROR: Pixels coordinates are less then 0");
+        return;
+    }
+
+
+    
     //rotating
     startY = height - startY - 1;
     endY = height - endY - 1;
