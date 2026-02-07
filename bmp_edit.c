@@ -117,7 +117,7 @@ void rotate270(InfoHeader *infoHeader, Pixel*** pixelMap){
     infoHeader->height = width;
 }
 
-void snapImage(InfoHeader *infoHeader, Pixel ***pixelMap, int startX, int startY, int endX, int endY) {
+void snapImage(InfoHeader *infoHeader, Pixel ***pixelMap, uint32_t startX, uint32_t startY, uint32_t endX, uint32_t endY) {
     uint32_t width = infoHeader->width;
     uint32_t height = infoHeader->height;
     //errors
@@ -147,10 +147,10 @@ void snapImage(InfoHeader *infoHeader, Pixel ***pixelMap, int startX, int startY
         endY = tempY;
     }
     //determine new size
-    int newHeight = endY - startY + 1;
-    int newWidth = endX - startX + 1;
+    uint32_t newHeight = endY - startY + 1;
+    uint32_t newWidth = endX - startX + 1;
 
-    Pixel** newPixelMap = allocate2DPixelArray(width, height);
+    Pixel** newPixelMap = allocate2DPixelArray(newWidth, newHeight);
     //copy snaped pixelMap into a newPixelMap
     for (int y = 0; y < newHeight; y++) {
         for (int x = 0; x < newWidth; x++) {
@@ -169,6 +169,53 @@ void snapImage(InfoHeader *infoHeader, Pixel ***pixelMap, int startX, int startY
     infoHeader->width = newWidth;
 }
 
+void addFrame(InfoHeader *infoHeader, Pixel ***pixelMap, uint32_t frameWidth, uint8_t frameR, uint8_t frameG, uint8_t frameB){
+    uint32_t width = infoHeader->width;
+    uint32_t height = infoHeader->height;
+    //errors
+    if(frameWidth <= 0){
+        printf("frame width shuould be bigger then 0");
+        return;
+    }
+    //determine new size
+    uint32_t newWidth = width + (frameWidth * 2);
+    uint32_t newHeight = height + (frameWidth * 2);
+    printf("Size determined\n");
+    Pixel** newPixelMap = allocate2DPixelArray(newHeight, newWidth);
+    printf("mem allocated\n");
+    for(int y = 0; y < newHeight; y++){
+        if(y < frameWidth || y >= frameWidth + height){
+            for(int x = 0; x < newWidth; x++){
+                newPixelMap[y][x].r = frameR;
+                newPixelMap[y][x].g = frameG;
+                newPixelMap[y][x].b = frameB;
+            }
+        }else{
+            for(int x = 0; x < frameWidth; x++){
+                newPixelMap[y][x].r = frameR;
+                newPixelMap[y][x].g = frameG;
+                newPixelMap[y][x].b = frameB;
+            }   
+            for(int x = frameWidth; x < width + frameWidth; x++){
+                newPixelMap[y][x] = (*pixelMap)[y-frameWidth][x-frameWidth];
+            }
+            for(int x = width + frameWidth; x < newWidth; x++){
+                newPixelMap[y][x].r = frameR;
+                newPixelMap[y][x].g = frameG;
+                newPixelMap[y][x].b = frameB;
+            }
+        }
+    }
+    printf("2d array filled");
+    for (int i = 0; i < height; i++) {
+        free((*pixelMap)[i]);
+    }
+    free(*pixelMap);
+
+    *pixelMap = newPixelMap;
+    infoHeader->height = newHeight;
+    infoHeader->width = newWidth;
+}
 //frame: user can give width and color of a frame
 
 //zooom: x2 x0.5

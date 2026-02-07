@@ -50,7 +50,13 @@ int main() {
     //rotate90(infoHeader, &pixelMap);
     // rotate180(infoHeader, pixelMap);
     //rotate270(infoHeader,&pixelMap);
+<<<<<<< HEAD
     snapImage(infoHeader, &pixelMap, 0, 0, 1, 1);
+=======
+    //snapImage(infoHeader, &pixelMap, 0, 0, 1, 1);
+    addFrame(infoHeader, &pixelMap, 1, 0, 0, 0); // width: 3, r: 0, g: 0, b:0
+
+>>>>>>> e4ae108 (Add an "Add frame" feature)
     outPutStructTemp(header, infoHeader);
     outputPixels(infoHeader, pixelMap);
 
