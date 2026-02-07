@@ -4,6 +4,9 @@
 #define MBP_EDIT_H
 
 void outputPixels(InfoHeader *infoHeader, Pixel** pixelMap);
+
+Pixel** allocate2DPixelArray(int rows, int cols);
+
 void mirrorX(InfoHeader *infoHeader, Pixel** pixelMap);
 void mirrorY(InfoHeader *infoHeader, Pixel** pixelMap);
 

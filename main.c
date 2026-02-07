@@ -47,14 +47,15 @@ int main() {
 
     // mirrorX(header, infoHeader, pixelMap);
     // mirrorY(infoHeader, pixelMap);
-    // rotate90(infoHeader, &pixelMap);
+    //rotate90(infoHeader, &pixelMap);
     // rotate180(infoHeader, pixelMap);
     //rotate270(infoHeader,&pixelMap);
-    snapImage(infoHeader, &pixelMap, 0, 0, 2, 1);
+    snapImage(infoHeader, &pixelMap, 0, 0, 1, 1);
     outPutStructTemp(header, infoHeader);
     outputPixels(infoHeader, pixelMap);
 
-    freePixelMap(infoHeader, pixelMap);
     free(buffer);
     return 0;
+    //add File type check
+    //check malloc
 }

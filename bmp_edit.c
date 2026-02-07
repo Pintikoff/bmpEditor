@@ -71,11 +71,8 @@ void mirrorY(InfoHeader *infoHeader, Pixel** pixelMap){
 void rotate90(InfoHeader *infoHeader, Pixel*** pixelMap){
     uint32_t width = infoHeader->width;
     uint32_t height = infoHeader->height;
-    //creating a new map
-    Pixel** newPixelMap = malloc(width*sizeof(Pixel));
-    for(int i = 0; i < width; i++){
-        newPixelMap[i] = malloc(height*sizeof(Pixel));
-    }
+
+    Pixel** newPixelMap = allocate2DPixelArray(width, height);
     //copying rotated pixelMap into a newPixelMap
     for(int y = 0; y < height; y++){
         for(int x = 0; x < width; x++){
@@ -101,11 +98,8 @@ void rotate180(InfoHeader *infoHeader, Pixel** pixelMap){
 void rotate270(InfoHeader *infoHeader, Pixel*** pixelMap){
     uint32_t width = infoHeader->width;
     uint32_t height = infoHeader->height;
-    //creating newPixelMap
-    Pixel** newPixelMap = malloc(width*sizeof(Pixel));
-    for(int i = 0; i < width; i++){
-        newPixelMap[i] = malloc(height*sizeof(Pixel));
-    }
+
+    Pixel** newPixelMap = allocate2DPixelArray(width, height);
     //copying rotated pixelMap into a newPixelMap
     for(int y = 0; y < height; y++){
         for(int x = 0; x < width; x++){
@@ -127,18 +121,15 @@ void snapImage(InfoHeader *infoHeader, Pixel ***pixelMap, int startX, int startY
     uint32_t width = infoHeader->width;
     uint32_t height = infoHeader->height;
     //errors
-
     if(startX < 0 || startY < 0 || endX < 0 || endY < 0){
-        printf("ERROR: Pixels coordinates are less then 0");
+        printf("ERROR: Pixels coordinates are less then 0\n");
         return;
     }
-    if(startX > width || startY < height || endX < width || endY < height){
-        printf("ERROR: Pixels coordinates are less then 0");
+    if(startX > width || startY > height || endX > width || endY > height){
+        printf("ERROR: Pixels coordinates are bigger then original coordinates\n");
         return;
     }
 
-
-    
     //rotating
     startY = height - startY - 1;
     endY = height - endY - 1;
@@ -159,12 +150,7 @@ void snapImage(InfoHeader *infoHeader, Pixel ***pixelMap, int startX, int startY
     int newHeight = endY - startY + 1;
     int newWidth = endX - startX + 1;
 
-    //create newPixelMap
-    Pixel **newPixelMap = malloc(newHeight * sizeof(Pixel*));
-    for (int i = 0; i < newHeight; i++) {
-        newPixelMap[i] = malloc(newWidth * sizeof(Pixel));
-    }
-
+    Pixel** newPixelMap = allocate2DPixelArray(width, height);
     //copy snaped pixelMap into a newPixelMap
     for (int y = 0; y < newHeight; y++) {
         for (int x = 0; x < newWidth; x++) {
