@@ -7,10 +7,6 @@
 #include "bmp_read.h"
 #include "bmp_edit.h"
 
-Pixel createPixelBGR(uint8_t r, uint8_t g, uint8_t b) {
-    Pixel px = {r, g, b};
-    return px;
-}
 
 void outPutStructTemp(Header* header, InfoHeader* infoHeader){
     printf("Header:\n");
@@ -32,8 +28,20 @@ void outPutStructTemp(Header* header, InfoHeader* infoHeader){
     printf("  colorsUsed: %u\n", infoHeader->colorsUsed);
     printf("  importantColors: %u\n", infoHeader->importantColors);
 }
+void outputPixels(InfoHeader *infoHeader, Pixel** pixelMap){
+    uint32_t width = infoHeader->width;
+    uint32_t height = infoHeader->height;
+    int actY = height;
 
-int main() {
+    for (int y = 0; y < height; y++) {
+        for (int x = 0; x < width; x++) {
+            printf("Row: %d Column: %d ", actY, x+1);
+            printf("R: %03d G: %03d: B: %03d \n", pixelMap[y][x].r, pixelMap[y][x].g, pixelMap[y][x].b);
+        }
+        actY--;
+    }
+}
+int main(int argc, char *argv[]) {
     char* link;
     //link = "/home/pintikoff/Code/emacs/hashImages/2by3.bmp"; // linux
     link = "C:/Users/petro/OneDrive/Documents/codeVS/C/bmpEditor/2by3.bmp"; //windows
@@ -42,21 +50,41 @@ int main() {
     InfoHeader *infoHeader = malloc(sizeof(InfoHeader));
 
     uint8_t* buffer = readHeader(link, header, infoHeader);
-
     Pixel **pixelMap = readPixels(header, infoHeader, buffer);
 
-    // mirrorX(header, infoHeader, pixelMap);
-    // mirrorY(infoHeader, pixelMap);
-    //rotate90(infoHeader, &pixelMap);
-    // rotate180(infoHeader, pixelMap);
-    //rotate270(infoHeader,&pixelMap);
-<<<<<<< HEAD
-    snapImage(infoHeader, &pixelMap, 0, 0, 1, 1);
-=======
-    //snapImage(infoHeader, &pixelMap, 0, 0, 1, 1);
-    addFrame(infoHeader, &pixelMap, 1, 0, 0, 0); // width: 3, r: 0, g: 0, b:0
+    if(strcmp(argv[1], "-m") == 0 || strcmp(argv[1], "--mirror") == 0){
+        if(strcmp(argv[2], "x") == 0){
+            mirrorX(infoHeader, pixelMap);
+        } 
+        else if(strcmp(argv[2], "y") == 0){
+            mirrorY(infoHeader, pixelMap);
+        }
+    } 
+    else if(strcmp(argv[1], "-r") == 0 || strcmp(argv[1], "--rotate") == 0){
+        if(strcmp(argv[2], "90") == 0){
+            rotate90(infoHeader, &pixelMap);
+        } 
+        else if(strcmp(argv[2], "180") == 0){
+            rotate180(infoHeader, pixelMap);
+        }
+        else if(strcmp(argv[2], "270") == 0){
+            rotate270(infoHeader,&pixelMap);
+        }
+    }
+    else if(strcmp(argv[1], "-s") == 0 || strcmp(argv[1], "--snap") == 0 && argc >= 6){
+        snapImage(infoHeader, &pixelMap, atoi(argv[2]), atoi(argv[3]), atoi(argv[4]), atoi(argv[5]));
+    }
+    else if(strcmp(argv[1], "-f") == 0 || strcmp(argv[1], "--frame") == 0 && argc >= 6){
+        addFrame(infoHeader, &pixelMap, atoi(argv[2]), atoi(argv[3]), atoi(argv[4]), atoi(argv[5]));
+    }
+    else if(strcmp(argv[1], "-h") == 0 || strcmp(argv[1], "--help") == 0){
+        //printHelp();
+    }
+    else{
+        printf("ERROR: Invalid argument. Check -h (--help) page");
+        return 0;
+    }
 
->>>>>>> e4ae108 (Add an "Add frame" feature)
     outPutStructTemp(header, infoHeader);
     outputPixels(infoHeader, pixelMap);
 

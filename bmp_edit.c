@@ -3,20 +3,6 @@
 #include <stdlib.h>
 #include "bmp_structs.h"
 
-void outputPixels(InfoHeader *infoHeader, Pixel** pixelMap){
-    uint32_t width = infoHeader->width;
-    uint32_t height = infoHeader->height;
-    int actY = height;
-
-    for (int y = 0; y < height; y++) {
-        for (int x = 0; x < width; x++) {
-            printf("Row: %d Column: %d ", actY, x+1);
-            printf("R: %03d G: %03d: B: %03d \n", pixelMap[y][x].r, pixelMap[y][x].g, pixelMap[y][x].b);
-        }
-        actY--;
-    }
-}
-
 Pixel** allocate2DPixelArray(int rows, int cols) {
     Pixel **array = malloc(rows * sizeof(Pixel*));
     if (array == NULL) {
@@ -150,7 +136,7 @@ void snapImage(InfoHeader *infoHeader, Pixel ***pixelMap, uint32_t startX, uint3
     uint32_t newHeight = endY - startY + 1;
     uint32_t newWidth = endX - startX + 1;
 
-    Pixel** newPixelMap = allocate2DPixelArray(newWidth, newHeight);
+    Pixel** newPixelMap = allocate2DPixelArray(newHeight, newWidth);
     //copy snaped pixelMap into a newPixelMap
     for (int y = 0; y < newHeight; y++) {
         for (int x = 0; x < newWidth; x++) {
@@ -174,7 +160,11 @@ void addFrame(InfoHeader *infoHeader, Pixel ***pixelMap, uint32_t frameWidth, ui
     uint32_t height = infoHeader->height;
     //errors
     if(frameWidth <= 0){
-        printf("frame width shuould be bigger then 0");
+        printf("ERROR: invalid RGB value (min value - 0)");
+        return;
+    }
+    if(frameR > 255 || frameG > 255 ||frameB > 255){
+        printf("ERROR: invalid RGB value (max value - 255)");
         return;
     }
     //determine new size
@@ -216,6 +206,6 @@ void addFrame(InfoHeader *infoHeader, Pixel ***pixelMap, uint32_t frameWidth, ui
     infoHeader->height = newHeight;
     infoHeader->width = newWidth;
 }
-//frame: user can give width and color of a frame
+
 
 //zooom: x2 x0.5
