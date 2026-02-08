@@ -79,14 +79,14 @@ void outputPixels(InfoHeader *infoHeader, Pixel** pixelMap){
 }
 
 int main(int argc, char *argv[]) {
-    char* link;
+    char link[512];
+    printf("Enter a link to a bmp file: \n");
+    scanf("%511s", link);
 
-    //link = "/home/pintikoff/Code/emacs/hashImages/2by3.bmp"; // linux
-    link = "C:/Users/petro/OneDrive/Documents/codeVS/C/bmpEditor/2by3.bmp"; //windows
-
+    strcpy(link, "C:/Users/petro/OneDrive/Documents/codeVS/C/bmpEditor/2by3.bmp"); //Win
+    //strcpy(link, "/home/pintikoff/Code/emacs/hashImages/2by3.bmp"); //Linux
     Header* header = malloc(sizeof(Header));
     InfoHeader *infoHeader = malloc(sizeof(InfoHeader));
-
     uint8_t* buffer = readHeader(link, header, infoHeader);
     Pixel **pixelMap = readPixels(header, infoHeader, buffer);
 
@@ -126,7 +126,6 @@ int main(int argc, char *argv[]) {
     }
     else if(strcmp(argv[1], "-t") == 0){
         writeNewFile(header, infoHeader, pixelMap);
-        return 0;
     }
     else{
         printf("ERROR: Invalid argument. Check -h (--help) page");
