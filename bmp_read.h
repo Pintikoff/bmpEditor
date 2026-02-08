@@ -6,6 +6,5 @@
 
 uint8_t* readHeader(char* link, Header* header,  InfoHeader* infoHeader);
 Pixel** readPixels(Header *header, InfoHeader *infoHeader, uint8_t *buffer);
-void freePixelMap(InfoHeader* infoHeader,Pixel** pixelMap);
 
 #endif

@@ -75,11 +75,3 @@ Pixel** readPixels(Header *header, InfoHeader *infoHeader, uint8_t *buffer) {
     free(pixels);
     return pixelMap;
 }
-
-void freePixelMap(InfoHeader* infoHeader,Pixel** pixelMap){
-    int height = infoHeader->height;
-    for(int y = 0; y < height; y++ ){
-        free(pixelMap[y]);
-    }
-    free(pixelMap);
-}
