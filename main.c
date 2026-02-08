@@ -77,8 +77,10 @@ void outputPixels(InfoHeader *infoHeader, Pixel** pixelMap){
         actY--;
     }
 }
+
 int main(int argc, char *argv[]) {
     char* link;
+
     //link = "/home/pintikoff/Code/emacs/hashImages/2by3.bmp"; // linux
     link = "C:/Users/petro/OneDrive/Documents/codeVS/C/bmpEditor/2by3.bmp"; //windows
 
@@ -99,22 +101,31 @@ int main(int argc, char *argv[]) {
     else if(strcmp(argv[1], "-r") == 0 || strcmp(argv[1], "--rotate") == 0){
         if(strcmp(argv[2], "90") == 0){
             rotate90(infoHeader, &pixelMap);
+            writeNewFile(header, infoHeader, pixelMap);
         } 
         else if(strcmp(argv[2], "180") == 0){
             rotate180(infoHeader, pixelMap);
+            writeNewFile(header, infoHeader, pixelMap);
         }
         else if(strcmp(argv[2], "270") == 0){
             rotate270(infoHeader,&pixelMap);
+            writeNewFile(header, infoHeader, pixelMap);
         }
     }
     else if(strcmp(argv[1], "-s") == 0 || strcmp(argv[1], "--snap") == 0 && argc >= 6){
         snapImage(infoHeader, &pixelMap, atoi(argv[2]), atoi(argv[3]), atoi(argv[4]), atoi(argv[5]));
+        writeNewFile(header, infoHeader, pixelMap);
     }
     else if(strcmp(argv[1], "-f") == 0 || strcmp(argv[1], "--frame") == 0 && argc >= 6){
         addFrame(infoHeader, &pixelMap, atoi(argv[2]), atoi(argv[3]), atoi(argv[4]), atoi(argv[5]));
+        writeNewFile(header, infoHeader, pixelMap);
     }
     else if(strcmp(argv[1], "-h") == 0 || strcmp(argv[1], "--help") == 0){
         printHelp();
+        return 0;
+    }
+    else if(strcmp(argv[1], "-t") == 0){
+        writeNewFile(header, infoHeader, pixelMap);
         return 0;
     }
     else{
@@ -126,7 +137,12 @@ int main(int argc, char *argv[]) {
     outputPixels(infoHeader, pixelMap);
 
     free(buffer);
+    int height = infoHeader->height;
+    for(int y = 0; y < height; y++ ){
+        free(pixelMap[y]);
+    }
+    free(pixelMap);
+    printf("Pixel map freed");
     return 0;
     //add File type check
-    //check malloc
 }
