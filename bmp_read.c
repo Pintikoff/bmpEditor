@@ -20,7 +20,7 @@ uint8_t* readHeader(char* link, Header* header,  InfoHeader* infoHeader) {
     //copying buffer values into a header(header is a pointer)
     memcpy(header, buffer, sizeof(Header));
     memcpy(infoHeader, buffer + sizeof(Header), sizeof(InfoHeader));
-
+/*
     //printing file data
     for (int i = 0; i < fileSize; i++) {
         printf("%02X ", buffer[i]);
@@ -28,6 +28,8 @@ uint8_t* readHeader(char* link, Header* header,  InfoHeader* infoHeader) {
         printf("\n");
     }
     printf("\n");
+
+*/
     fclose(fp);
     return buffer;
 }

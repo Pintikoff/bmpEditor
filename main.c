@@ -7,7 +7,43 @@
 #include "bmp_read.h"
 #include "bmp_edit.h"
 
-
+void printHelp() {
+    // ANSI color codes
+    const char* BOLD = "\033[1m";
+    const char* CYAN = "\033[36m";
+    const char* GREEN = "\033[32m";
+    const char* YELLOW = "\033[33m";
+    const char* RESET = "\033[0m";
+    
+    printf("%s         BMP Image Editor - Help Page              %s\n", CYAN, RESET);
+    printf("\n");
+    
+    printf("%sUSAGE:%s\n", BOLD, RESET);
+    printf("  ./bmp_editor <input.bmp> <output.bmp> [operation] [parameters]\n\n");
+    
+    printf("%sOPERATIONS:%s\n\n", BOLD, RESET);
+    
+    printf("  %s-m, --mirror%s <x|y>\n", GREEN, RESET);
+    printf("      Mirror the image\n");
+    printf("        %sx%s - horizontal, %sy%s - vertical\n", YELLOW, RESET, YELLOW, RESET);
+    printf("      Example: %s./main.exe -m x%s\n\n", CYAN, RESET);
+    
+    printf("  %s-r, --rotate%s <90|180|270>\n", GREEN, RESET);
+    printf("      Rotate the image clockwise\n");
+    printf("      Example: %s./main.exe -r 90%s\n\n", CYAN, RESET);
+    
+    printf("  %s-s, --snap%s <x1> <y1> <x2> <y2>\n", GREEN, RESET);
+    printf("      Crop to rectangle\n");
+    printf("      Example: %s./main.exe -s 0 0 800 600%s\n\n", CYAN, RESET);
+    
+    printf("  %s-f, --frame%s <thickness> <r> <g> <b>\n", GREEN, RESET);
+    printf("      Add colored frame (RGB: 0-255)\n");
+    printf("      Example: %s./main.exe -f 10 255 0 0%s\n\n", CYAN, RESET);
+    
+    printf("%sNOTES:%s\n", BOLD, RESET);
+    printf("%s  -Only 24-bit BMP files supported%s\n", YELLOW, RESET);
+    printf("%s  -Coordinates: (0,0) = top-left%s\n\n", YELLOW, RESET);
+}
 void outPutStructTemp(Header* header, InfoHeader* infoHeader){
     printf("Header:\n");
     printf("  signature: 0x%04X\n", header->signature);
@@ -78,7 +114,8 @@ int main(int argc, char *argv[]) {
         addFrame(infoHeader, &pixelMap, atoi(argv[2]), atoi(argv[3]), atoi(argv[4]), atoi(argv[5]));
     }
     else if(strcmp(argv[1], "-h") == 0 || strcmp(argv[1], "--help") == 0){
-        //printHelp();
+        printHelp();
+        return 0;
     }
     else{
         printf("ERROR: Invalid argument. Check -h (--help) page");
