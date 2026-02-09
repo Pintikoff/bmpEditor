@@ -30,16 +30,14 @@ void writeNewFile(Header *header, InfoHeader *infoHeader, Pixel** pixelMap){
 
     for(int y = 0; y < height; y++){
         for(int x = 0; x < width; x++){
-            fputc(pixelMap[y][x].b, file);
-            fputc(pixelMap[y][x].g, file);
-            fputc(pixelMap[y][x].r, file);
+            fwrite(pixelMap[y], sizeof(pixelMap), width, file);
         }
         for(int p = 0; p < padding; p++){
             fputc(0, file);
         }
     }
 
-    printf("File '%s' has been created", fileName);
+    printf("File '%s' has been created\n", fileName);
 };
 
 void printHelp() {
