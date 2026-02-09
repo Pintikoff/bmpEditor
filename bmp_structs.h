@@ -1,8 +1,7 @@
-#include <stdint.h>
-
 #ifndef BMP_STRUCTS_H
 #define BMP_STRUCTS_H
 
+#include <stdint.h>
 #pragma pack(1)
 struct HeaderStruct {
     uint16_t signature;
@@ -35,4 +34,5 @@ typedef struct HeaderStruct Header;
 typedef struct InfoHeaderStruct InfoHeader;
 typedef struct PixelStruct Pixel;
 #pragma pack()
+
 #endif

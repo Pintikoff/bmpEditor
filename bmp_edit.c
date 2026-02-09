@@ -26,44 +26,6 @@ Pixel** allocate2DPixelArray(int rows, int cols) {
     return array;
 }
 
-void writeNewFile(Header *header, InfoHeader *infoHeader, Pixel** pixelMap){
-    uint32_t width = infoHeader->width;
-    uint32_t height = infoHeader->height;
-    uint8_t padding = (4 - (width * 3) % 4) % 4;
-    char directory[448];
-    char fileName[64];
-    
-    printf("Enter a new file DIRECTORY path: \n");
-    scanf("%447s", directory);
-    printf("Enter a new file NAME: \n");
-    scanf("%63s", fileName);
-
-    char fullPath[512];
-    snprintf(fullPath, sizeof(fullPath), "%s/%s.bmp", directory, fileName);
-
-    FILE* file = fopen(fullPath, "wb");
-    if (!file){
-        perror("Failed to create a file");
-        return;
-    }
-    fwrite(header, 1, sizeof(*header), file);
-    fwrite(infoHeader, 1, sizeof(*infoHeader), file);
-
-    for(int y = 0; y < height; y++){
-        for(int x = 0; x < width; x++){
-            fputc(pixelMap[y][x].b, file);
-            fputc(pixelMap[y][x].g, file);
-            fputc(pixelMap[y][x].r, file);
-        }
-        for(int p = 0; p < padding; p++){
-            fputc(0, file);
-        }
-    }
-
-    printf("File '%s' has been created", fileName);
-};
-
-// vertical mirror top -> bottom
 void mirrorX(InfoHeader *infoHeader, Pixel** pixelMap){
     uint32_t width = infoHeader->width;
     uint32_t height = infoHeader->height;
@@ -76,7 +38,6 @@ void mirrorX(InfoHeader *infoHeader, Pixel** pixelMap){
     }
 }
 
-//horizontal mirror
 void mirrorY(InfoHeader *infoHeader, Pixel** pixelMap){
     uint32_t width = infoHeader->width;
     uint32_t height = infoHeader->height;

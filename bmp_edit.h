@@ -1,7 +1,6 @@
-#include "bmp_structs.h"
-
 #ifndef BMP_EDIT_H
 #define MBP_EDIT_H
+#include "bmp_structs.h"
 
 void outputPixels(InfoHeader *infoHeader, Pixel** pixelMap);
 
@@ -18,4 +17,5 @@ void rotate270(InfoHeader *infoHeader, Pixel ***pixelMap);
 void snapImage(InfoHeader *infoHeader, Pixel ***pixelMap, int startX, int startY, int endX, int endY);
 
 void addFrame(InfoHeader *infoHeader, Pixel ***pixelMap, uint32_t frameWidth, uint8_t frameR, uint8_t frameG, uint8_t frameB);
+
 #endif 
