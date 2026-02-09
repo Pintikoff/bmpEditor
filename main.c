@@ -8,23 +8,31 @@
 #include "bmp_edit.h"
 #include "bmp_other.h"
 
-int main(int argc, char *argv[]) {
+int main(int argc, char *argv[]) {    
+    //make a func
     char link[512];
     printf("Enter a link to a bmp file: \n");
     scanf("%511s", link);
-
+        
     strcpy(link, "C:/Users/petro/OneDrive/Documents/codeVS/C/bmpEditor/2by3.bmp"); //Win
     //strcpy(link, "/home/pintikoff/Code/emacs/hashImages/2by3.bmp"); //Linux
+    
     Header* header = malloc(sizeof(Header));
     InfoHeader *infoHeader = malloc(sizeof(InfoHeader));
+
     uint8_t* buffer = readHeader(link, header, infoHeader);
     Pixel **pixelMap = readPixels(header, infoHeader, buffer);
 
+    int fileType = checkFileType(header);
+    if(fileType == 1){
+        return 1;
+    }
     uint32_t height = infoHeader->height;
+
     if(argc == 0){
-    outPutStructTemp(header, infoHeader);
-    outputPixels(infoHeader, pixelMap);
-}
+        outPutStructTemp(header, infoHeader);
+        outputPixels(infoHeader, pixelMap);
+    }
     else if(strcmp(argv[1], "-m") == 0 || strcmp(argv[1], "--mirror") == 0){
         if (argc < 3) {
             printf("ERROR: Mirror requires axis argument (x or y)\n");
@@ -89,19 +97,19 @@ int main(int argc, char *argv[]) {
         return 0;
     }
     else if(strcmp(argv[1], "-test") == 0){
-        writeNewFile(header, infoHeader, pixelMap);
+       
     }
     else{
         printf("ERROR: Unknown command '%s'. Use -h for help\n", argv[1]);
         return 1;
     }
-
+    printf("check");
     free(buffer);
     for(int y = 0; y < height; y++ ){
         free(pixelMap[y]);
     }
     free(pixelMap);
-    printf("Pixel map freed");
     return 0;
+    //update help page
     //add File type check
 }

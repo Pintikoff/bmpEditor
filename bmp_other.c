@@ -99,7 +99,7 @@ void outPutStructTemp(Header* header, InfoHeader* infoHeader){
     printf("  importantColors: %u\n", infoHeader->importantColors);
 }
 
-void outputPixels(InfoHeader *infoHeader, Pixel** pixelMap){
+void outputPixels(InfoHeader* infoHeader, Pixel** pixelMap){
     uint32_t width = infoHeader->width;
     uint32_t height = infoHeader->height;
     int actY = height;
@@ -110,5 +110,16 @@ void outputPixels(InfoHeader *infoHeader, Pixel** pixelMap){
             printf("R: %03d G: %03d: B: %03d \n", pixelMap[y][x].r, pixelMap[y][x].g, pixelMap[y][x].b);
         }
         actY--;
+    }
+}
+
+int checkFileType(Header* header){
+    uint16_t signature = header->signature;
+    printf("0x%04X, %d\n", signature, signature);
+    if(signature != 0x4D42){
+        return 1;
+    }
+    else{
+        return 0;
     }
 }
