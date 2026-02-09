@@ -154,17 +154,22 @@ void snapImage(InfoHeader *infoHeader, Pixel ***pixelMap, uint32_t startX, uint3
 }
 
 void addFrame(InfoHeader *infoHeader, Pixel ***pixelMap, uint32_t frameWidth, uint8_t frameR, uint8_t frameG, uint8_t frameB){
-    uint32_t width = infoHeader->width;
-    uint32_t height = infoHeader->height;
     //errors
     if(frameWidth <= 0){
-        printf("ERROR: invalid RGB value (min value - 0)");
+        printf("ERROR: invalid frame width value (min - 0)");
         return;
     }
     if(frameR > 255 || frameG > 255 ||frameB > 255){
-        printf("ERROR: invalid RGB value (max value - 255)");
+        printf("ERROR: invalid RGB value (max - 255)");
         return;
     }
+    if(frameR > 0 || frameG > 0 ||frameB > 0){
+        printf("ERROR: invalid RGB value (min - 0)");
+        return;
+    }
+    
+    uint32_t width = infoHeader->width;
+    uint32_t height = infoHeader->height;
     //determine new size
     uint32_t newWidth = width + (frameWidth * 2);
     uint32_t newHeight = height + (frameWidth * 2);
@@ -205,5 +210,36 @@ void addFrame(InfoHeader *infoHeader, Pixel ***pixelMap, uint32_t frameWidth, ui
     infoHeader->width = newWidth;
 }
 
+void changeTint(InfoHeader* infoHeader, Pixel **pixelMap, char* tintColorString, uint8_t tintValue){
+    char tintColor = *tintColorString;
+    if(tintColor != 'b' && tintColor != 'g' && tintColor != 'r'){
+        printf("ERROR: Invalid tint color value (b, g or r)");
+        return;
+    } 
+    if(tintValue > 255){
+        tintValue = 255;
+    }
+    else if(tintValue > 0){
+        tintValue = 0;
+    }
+    
+    uint32_t width = infoHeader->width;
+    uint32_t height = infoHeader->height;
+    for(int y = 0; y < height; y++){
+        for(int x = 0; x < width; x++){
+            switch(tintColor){
+                case 'b':
+                    pixelMap[y][x].b = tintValue;
+                    break;
+                case 'g':
+                    pixelMap[y][x].g = tintValue;
+                    break;
+                case 'r':
+                    pixelMap[y][x].r = tintValue;
+                    break;
+            }   
+        }
+    }
+}
 
 //zooom: x2 x0.5
