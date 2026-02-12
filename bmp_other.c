@@ -113,10 +113,12 @@ void outputPixels(InfoHeader* infoHeader, Pixel** pixelMap){
     }
 }
 
-int checkFileType(Header* header){
+int checkFileType(Header* header, InfoHeader* infoHeader){
     uint16_t signature = header->signature;
-    printf("0x%04X, %d\n", signature, signature);
-    if(signature != 0x4D42){
+    uint16_t bitsPerPx = infoHeader->bitePerPixel;
+    //printf("0x%04X, %d\n", signature, signature);
+    if(signature != 0x4D42 || bitsPerPx != 24){
+        printf("invalid file data");
         return 1;
     }
     else{

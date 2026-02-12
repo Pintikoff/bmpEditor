@@ -6,5 +6,5 @@ void writeNewFile(Header *header, InfoHeader *infoHeader, Pixel** pixelMap);
 void printHelp();
 void outPutStructTemp(Header* header, InfoHeader* infoHeader);
 void outputPixels(InfoHeader *infoHeader, Pixel** pixelMap);
-int checkFileType(Header* header);
+int checkFileType(Header* header, InfoHeader* infoHeader);
 #endif

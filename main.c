@@ -22,14 +22,16 @@ int main(int argc, char *argv[]) {
 
     uint8_t* buffer = readHeader(link, header, infoHeader);
     Pixel **pixelMap = readPixels(header, infoHeader, buffer);
-
-    int fileType = checkFileType(header);
+    
+    int fileType = checkFileType(header, infoHeader);
     if(fileType == 1){
         return 1;
     }
+    
+    
     uint32_t height = infoHeader->height;
 
-    if(argc == 0){
+    if(argc == 1){
         outPutStructTemp(header, infoHeader);
         outputPixels(infoHeader, pixelMap);
     }
@@ -97,13 +99,12 @@ int main(int argc, char *argv[]) {
         return 0;
     }
     else if(strcmp(argv[1], "-test") == 0){
-       
+        writeNewFile(header, infoHeader, pixelMap);
     }
     else{
         printf("ERROR: Unknown command '%s'. Use -h for help\n", argv[1]);
         return 1;
     }
-    printf("check");
     free(buffer);
     for(int y = 0; y < height; y++ ){
         free(pixelMap[y]);
