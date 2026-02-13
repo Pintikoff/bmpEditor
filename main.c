@@ -9,28 +9,31 @@
 #include "bmp_other.h"
 
 int main(int argc, char *argv[]) {    
-    //make a func
     char link[512];
+    Header* header;
+    InfoHeader *infoHeader;
+    uint8_t* buffer;
+    Pixel **pixelMap;
+    uint32_t height;
+    //
     printf("Enter a link to a bmp file: \n");
     scanf("%511s", link);
         
     strcpy(link, "C:/Users/petro/OneDrive/Documents/codeVS/C/bmpEditor/2by3.bmp"); //Win
     //strcpy(link, "/home/pintikoff/Code/emacs/hashImages/2by3.bmp"); //Linux
     
-    Header* header = malloc(sizeof(Header));
-    InfoHeader *infoHeader = malloc(sizeof(InfoHeader));
+    header = malloc(sizeof(Header));
+    infoHeader = malloc(sizeof(InfoHeader));
 
-    uint8_t* buffer = readHeader(link, header, infoHeader);
-    Pixel **pixelMap = readPixels(header, infoHeader, buffer);
-    
+    buffer = readHeader(link, header, infoHeader);
+    pixelMap = readPixels(header, infoHeader, buffer);
+    height = infoHeader->height;
+
     int fileType = checkFileType(header, infoHeader);
     if(fileType == 1){
         return 1;
     }
-    
-    
-    uint32_t height = infoHeader->height;
-
+    //
     if(argc == 1){
         outPutStructTemp(header, infoHeader);
         outputPixels(infoHeader, pixelMap);
@@ -99,6 +102,7 @@ int main(int argc, char *argv[]) {
         return 0;
     }
     else if(strcmp(argv[1], "-test") == 0){
+        zoomX2(infoHeader, &pixelMap);
         writeNewFile(header, infoHeader, pixelMap);
     }
     else{
@@ -106,8 +110,8 @@ int main(int argc, char *argv[]) {
         return 1;
     }
     free(buffer);
-    for(int y = 0; y < height; y++ ){
-        free(pixelMap[y]);
+    for(int i = 0; i < height; i++ ){
+        free(pixelMap[i]);
     }
     free(pixelMap);
     return 0;
