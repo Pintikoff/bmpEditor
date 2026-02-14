@@ -9,6 +9,12 @@
 #include "bmp_other.h"
 
 int main(int argc, char *argv[]) {    
+    printf("=== PROGRAM START ===\n");
+    printf("argc = %d\n", argc);
+    for(int i = 0; i < argc; i++){
+        printf("argv[%d] = '%s'\n", i, argv[i]);
+    }
+    printf("=====================\n\n");
     char link[512];
     Header* header;
     InfoHeader *infoHeader;
@@ -47,6 +53,8 @@ int main(int argc, char *argv[]) {
         if (strcmp(argv[2], "x") == 0) {
             mirrorX(infoHeader, pixelMap);
         } else if (strcmp(argv[2], "y") == 0) {
+            mirrorY(infoHeader, pixelMap);
+        } else {
             printf("ERROR: Invalid axis '%s'. Use 'x' or 'y'\n", argv[2]);
             return 1;
         }
@@ -97,23 +105,33 @@ int main(int argc, char *argv[]) {
         changeTint(infoHeader, pixelMap, argv[2], atoi(argv[3]));
         writeNewFile(header, infoHeader, pixelMap);
     }
+    else if(strcmp(argv[1], "-z") == 0 || strcmp(argv[1], "--zoom") == 0){
+        if(argc == 2){
+            zoom(infoHeader, &pixelMap, 0);
+        } else if(argc == 3){
+            zoom(infoHeader, &pixelMap, atoi(argv[2]));
+        }
+        writeNewFile(header, infoHeader, pixelMap);
+    }
     else if(strcmp(argv[1], "-h") == 0 || strcmp(argv[1], "--help") == 0){
         printHelp();
         return 0;
     }
     else if(strcmp(argv[1], "-test") == 0){
-        zoomX2(infoHeader, &pixelMap);
-        writeNewFile(header, infoHeader, pixelMap);
+
     }
     else{
         printf("ERROR: Unknown command '%s'. Use -h for help\n", argv[1]);
         return 1;
     }
+    height = infoHeader->height;
     free(buffer);
     for(int i = 0; i < height; i++ ){
         free(pixelMap[i]);
     }
     free(pixelMap);
+    free(header);
+    free(infoHeader);
     return 0;
     //update help page
     //add File type check

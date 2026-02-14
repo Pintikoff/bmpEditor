@@ -242,19 +242,28 @@ void changeTint(InfoHeader* infoHeader, Pixel **pixelMap, char* tintColorString,
     }
 }
 
-void zoomX2(InfoHeader* infoHeader, Pixel ***pixelMap){
+void zoom(InfoHeader* infoHeader, Pixel ***pixelMap, uint32_t zoomValue){    
     uint32_t width = infoHeader->width;
     uint32_t height = infoHeader->height;
+    if(zoomValue == 0){
+        zoomValue = 2;
+    }
     if(height > UINT32_MAX / 2|| width > UINT32_MAX / 2){
         printf("ERROR: Resolution is too high");
         return;
     }
-    uint32_t newWidth = width * 2;
-    uint32_t newHeight = height * 2;
+    uint32_t newWidth = width * zoomValue;
+    uint32_t newHeight = height * zoomValue;
     Pixel** newPixelMap = allocate2DPixelArray(newHeight, newWidth);
+    if(newPixelMap == NULL){
+        printf("ERROR: Failed to allocate memory for zoom\n");
+        return;
+    }
     for(int y = 0; y < newHeight; y++){
+        uint32_t srcY = y/zoomValue;
         for(int x = 0; x < newWidth; x++){
-            newPixelMap[y][x] = (*pixelMap)[y/2][x/2];
+            uint32_t srcX = x/zoomValue;
+            newPixelMap[y][x] = (*pixelMap)[srcY][srcX];
         }
     }
     for(int i = 0; i < height; i++){
