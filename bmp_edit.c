@@ -105,7 +105,7 @@ void snapImage(InfoHeader *infoHeader, Pixel ***pixelMap, uint32_t startX, uint3
     uint32_t width = infoHeader->width;
     uint32_t height = infoHeader->height;
     //errors
-    if(startX < 0 || startY < 0 || endX < 0 || endY < 0){
+    if((int)startX < 0 || (int)startY < 0 || (int)endX < 0 || (int)endY < 0){
         printf("ERROR: Pixels coordinates are less then 0\n");
         return;
     }
@@ -155,15 +155,15 @@ void snapImage(InfoHeader *infoHeader, Pixel ***pixelMap, uint32_t startX, uint3
 
 void addFrame(InfoHeader *infoHeader, Pixel ***pixelMap, uint32_t frameWidth, uint8_t frameR, uint8_t frameG, uint8_t frameB){
     //errors
-    if(frameWidth <= 0){
+    if((int)frameWidth <= 0){
         printf("ERROR: invalid frame width value (min - 0)");
         return;
     }
-    if(frameR > 255 || frameG > 255 ||frameB > 255){
+    if((int)frameR > 255 || (int)frameG > 255 || (int)frameB > 255){
         printf("ERROR: invalid RGB value (max - 255)");
         return;
     }
-    if(frameR > 0 || frameG > 0 ||frameB > 0){
+    if((int)frameR < 0 || (int)frameG < 0 || (int)frameB < 0){
         printf("ERROR: invalid RGB value (min - 0)");
         return;
     }
@@ -210,16 +210,16 @@ void addFrame(InfoHeader *infoHeader, Pixel ***pixelMap, uint32_t frameWidth, ui
     infoHeader->width = newWidth;
 }
 
-void changeTint(InfoHeader* infoHeader, Pixel **pixelMap, char* tintColorString, uint8_t tintValue){
-    char tintColor = *tintColorString;
+void changeTint(InfoHeader* infoHeader, Pixel **pixelMap, char tintColorString, uint8_t tintValue){
+    char tintColor = tintColorString;
     if(tintColor != 'b' && tintColor != 'g' && tintColor != 'r'){
         printf("ERROR: Invalid tint color value (b, g or r)");
         return;
     } 
-    if(tintValue > 255){
+    if((int)tintValue > 255){
         tintValue = 255;
     }
-    else if(tintValue > 0){
+    else if((int)tintValue < 0){
         tintValue = 0;
     }
     
@@ -245,6 +245,10 @@ void changeTint(InfoHeader* infoHeader, Pixel **pixelMap, char* tintColorString,
 void zoom(InfoHeader* infoHeader, Pixel ***pixelMap, uint32_t zoomValue){    
     uint32_t width = infoHeader->width;
     uint32_t height = infoHeader->height;
+    if((int)zoomValue < 0){
+        printf("ERROR: Invalid zoom multiplier (min - 1)");
+        return;
+    }
     if(zoomValue == 0){
         zoomValue = 2;
     }
