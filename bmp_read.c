@@ -32,36 +32,27 @@ Pixel** readPixels(Header *header, InfoHeader *infoHeader, uint8_t *buffer) {
     int rowSize = width * sizeof(Pixel);
     int padLength = (4 - (rowSize % 4)) % 4;
     int lineLength = rowSize + padLength;
-
-    int dst = 0;
+    
     uint8_t* src = buffer + header->dataOffset;
 
     //creating an array of PIXELS without padding and putting values in it
-    Pixel *pixels = malloc(rowSize * height);
+    Pixel* pixels = malloc(rowSize * height);
     for (int y = 0; y < height; y++) {
         memcpy(pixels + (y * width), src, rowSize);
-        src += rowSize + padLength;
+        src += lineLength;
     }
+
+    int i = 0;
     //creating 2d array of pixels
     Pixel **pixelMap = malloc(height * sizeof(Pixel*)); //size of datatype "Pixel"
+    //filling up 2d array with pixels from 1d array
     for (int y = 0; y < height; y++) {
         pixelMap[y] = malloc(width * sizeof(Pixel));
-    }
-    //filling up 2d array with pixels from 1d array
-    int i = 0;
-    for (int y = 0; y < height; y++) {
         for (int x = 0; x < width; x++) {
             pixelMap[y][x] = pixels[i];
             i++;
         }
     }
-    /*
-    for(int i = 0; i < 6; i++){
-        printf("Pixel %d ", i+1);
-        printf("R: %03d G: %03d: B: %03d \n", pixels[i].r, pixels[i].g,
-    pixels[i].b);
-    }
-*/
 
     free(pixels);
     return pixelMap;

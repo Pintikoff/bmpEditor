@@ -5,6 +5,19 @@
 #include <stdlib.h>
 #include "bmp_structs.h"
 
+void cleanMem(Header* header, InfoHeader* infoHeader, uint8_t* buffer, Pixel** pixelMap){
+    if(header) free(header);
+    if(infoHeader) free(infoHeader);
+    if(buffer) free(buffer);
+    if(pixelMap && infoHeader){
+        for(int i = 0; i < infoHeader->height; i++){
+            if(pixelMap[i]) free(pixelMap[i]);
+        }
+        free(pixelMap);
+    }
+    printf("cleanMem");
+}
+
 void writeNewFile(Header *header, InfoHeader *infoHeader, Pixel** pixelMap){
     uint32_t width = infoHeader->width;
     uint32_t height = infoHeader->height;
@@ -22,7 +35,7 @@ void writeNewFile(Header *header, InfoHeader *infoHeader, Pixel** pixelMap){
 
     FILE* file = fopen(fullPath, "wb");
     if (!file){
-        perror("Failed to create a file");
+        perror("ERROR: Failed to create a file");
         return;
     }
     fwrite(header, 1, sizeof(*header), file);

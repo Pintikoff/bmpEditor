@@ -30,10 +30,9 @@ int main(int argc, char *argv[]) {
 
     char link[512];
     Header* header;
-    InfoHeader *infoHeader;
+    InfoHeader* infoHeader;
     uint8_t* buffer;
-    Pixel **pixelMap;
-    uint32_t height;
+    Pixel** pixelMap;
     
     printf("Enter a link to a bmp file: \n");
     scanf("%511s", link);
@@ -50,32 +49,31 @@ int main(int argc, char *argv[]) {
     infoHeader = malloc(sizeof(InfoHeader));
     if(!infoHeader){
         perror("ERROR: Failed to allocate infoHeader");
-
+        cleanMem(header, NULL, NULL, NULL);
         return 1;
     }
 
     buffer = readHeader(link, header, infoHeader);
     if(!buffer){
         perror("ERROR: Failed to allocate buffer");
-
+        cleanMem(header, infoHeader, NULL, NULL);
         return 1;
     }
 
     pixelMap = readPixels(header, infoHeader, buffer);
     if(!pixelMap){
         perror("ERROR: Faield to allocate pixelMap");
-
+        cleanMem(header, infoHeader, buffer, NULL);
         return 1;
     }
-    height = infoHeader->height;
-
+    free(buffer);
+    buffer = NULL;
     int fileType = checkFileType(header, infoHeader);
     if(fileType == 1){
-
+        cleanMem(header, infoHeader, NULL, pixelMap);
         return 1;
     }
     
-
     if(argc == 1){
         outPutStructTemp(header, infoHeader);
         outputPixels(infoHeader, pixelMap);
@@ -83,6 +81,7 @@ int main(int argc, char *argv[]) {
     else if(strcmp(argv[1], "-m") == 0 || strcmp(argv[1], "--mirror") == 0){
         if (argc < 3) {
             printf("ERROR: Mirror requires axis argument (x or y)\n");
+            cleanMem(header, infoHeader, NULL, pixelMap);
             return 1;
         }
         
@@ -92,7 +91,7 @@ int main(int argc, char *argv[]) {
             mirrorY(infoHeader, pixelMap);
         } else {
             printf("ERROR: Invalid axis '%s'. Use 'x' or 'y'\n", argv[2]);
-
+            cleanMem(header, infoHeader, NULL, pixelMap);
             return 1;
         }
         writeNewFile(header, infoHeader, pixelMap);
@@ -100,7 +99,7 @@ int main(int argc, char *argv[]) {
     else if(strcmp(argv[1], "-r") == 0 || strcmp(argv[1], "--rotate") == 0){
         if (argc < 3) {
             printf("ERROR: Rotate requires angle argument (90, 180, or 270)\n");
-
+            cleanMem(header, infoHeader, NULL, pixelMap);
             return 1;
         }
 
@@ -115,7 +114,7 @@ int main(int argc, char *argv[]) {
         }
         else{
             printf("ERROR: Invalid angle '%s'. Use 90, 180, or 270\n", argv[2]);
-
+            cleanMem(header, infoHeader, NULL, pixelMap);
             return 1;
         }
         writeNewFile(header, infoHeader, pixelMap);
@@ -123,7 +122,7 @@ int main(int argc, char *argv[]) {
     else if (strcmp(argv[1], "-s") == 0 || strcmp(argv[1], "--snap") == 0) {
         if(argc < 6){
             printf("ERROR: Snap requires 4 coordinate arguments (startX startY endX endY)\n");
-
+            cleanMem(header, infoHeader, NULL, pixelMap);
             return 1;
         }
         snapImage(infoHeader, &pixelMap, atoi(argv[2]), atoi(argv[3]), atoi(argv[4]), atoi(argv[5]));
@@ -132,7 +131,7 @@ int main(int argc, char *argv[]) {
     else if(strcmp(argv[1], "-f") == 0 || strcmp(argv[1], "--frame") == 0){
         if(argc < 6){
             printf("ERROR: Frame requires 4 arguments (width R G B)\n");
-
+            cleanMem(header, infoHeader, NULL, pixelMap);
             return 1;
         }
         addFrame(infoHeader, &pixelMap, atoi(argv[2]), atoi(argv[3]), atoi(argv[4]), atoi(argv[5]));
@@ -141,7 +140,7 @@ int main(int argc, char *argv[]) {
     else if(strcmp(argv[1], "-t") == 0 || strcmp(argv[1], "--tint") == 0){
         if(argc < 4){
             printf("ERROR: Change tint requires 2 arguments (color, color value)");
-
+            cleanMem(header, infoHeader, NULL, pixelMap);
             return 1;
         }
         changeTint(infoHeader, pixelMap, argv[2][0], atoi(argv[3]));
@@ -157,6 +156,7 @@ int main(int argc, char *argv[]) {
     }
     else if(strcmp(argv[1], "-h") == 0 || strcmp(argv[1], "--help") == 0){
         printHelp();
+        cleanMem(header, infoHeader, NULL, pixelMap);
         return 0;
     }
     else if(strcmp(argv[1], "-test") == 0){
@@ -164,17 +164,10 @@ int main(int argc, char *argv[]) {
     }
     else{
         printf("ERROR: Unknown command '%s'. Use -h for help\n", argv[1]);
-
+        cleanMem(header, infoHeader, NULL, pixelMap);
         return 1;
     }
-    height = infoHeader->height;
-    free(buffer);
-    for(int i = 0; i < height; i++ ){
-        free(pixelMap[i]);
-    }
-    free(pixelMap);
-    free(header);
-    free(infoHeader);
+    cleanMem(header, infoHeader, NULL, pixelMap);
     return 0;
     //update help page
 }

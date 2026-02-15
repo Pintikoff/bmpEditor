@@ -3,14 +3,14 @@
 
 #include <stdint.h>
 #pragma pack(1)
-struct HeaderStruct {
+typedef struct {
     uint16_t signature;
     uint32_t fileSize;
     uint32_t reserved;
     uint32_t dataOffset;
-};
+} Header;
 
-struct InfoHeaderStruct {
+typedef struct {
     uint32_t size;            // size of InfoHeader
     uint32_t width;
     uint32_t height;
@@ -22,17 +22,14 @@ struct InfoHeaderStruct {
     uint32_t YpixelsPerM;
     uint32_t colorsUsed;
     uint32_t importantColors;
-};
+} InfoHeader;
 
-struct PixelStruct {
+typedef struct {
     uint8_t b;
     uint8_t g;
     uint8_t r;
-};
+} Pixel;
 
-typedef struct HeaderStruct Header;
-typedef struct InfoHeaderStruct InfoHeader;
-typedef struct PixelStruct Pixel;
 #pragma pack()
 
 #endif
