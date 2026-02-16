@@ -9,7 +9,7 @@
 #include "bmp_other.h"
 
 /*
-!--------Function list and it's location---------
+!--------Function list and its location---------
 ? bmp_edit.c:
     * Pixel** allocate2DPixelArray(int rows, int cols);
 
