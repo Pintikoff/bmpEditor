@@ -61,9 +61,9 @@ void printHelp() {
     const char* MAGENTA = "\033[35m";
     const char* RESET = "\033[0m";
     
-    printf("\n%s═══════════════════════════════════════════════════════════════%s\n", CYAN, RESET);
+    printf("\n%s===============================================================%s\n", CYAN, RESET);
     printf("%s            BMP Image Editor - Help Page                %s\n", CYAN, RESET);
-    printf("%s═══════════════════════════════════════════════════════════════%s\n\n", CYAN, RESET);
+    printf("%s===============================================================%s\n\n", CYAN, RESET);
     
     printf("%sUSAGE:%s\n", BOLD, RESET);
     printf("  ./bmp_editor [operation] [parameters]\n\n");
@@ -124,10 +124,10 @@ void printHelp() {
     printf("      Display this help message\n\n");
     
     printf("%sNOTES:%s\n", BOLD, RESET);
-    printf("  • Only 24-bit BMP files are supported\n");
-    printf("  • Coordinate system: (0,0) = top-left corner\n");
-    printf("  • Output file will be created in specified directory\n");
-    printf("  • Images are stored upside-down in BMP format\n\n");
+    printf("  - Only 24-bit BMP files are supported\n");
+    printf("  - Coordinate system: (0,0) = top-left corner\n");
+    printf("  - Output file will be created in specified directory\n");
+    printf("  - Images are stored upside-down in BMP format\n\n");
     
     printf("%sEXAMPLES:%s\n", BOLD, RESET);
     printf("  %s./bmp_editor -m y%s           Mirror vertically\n", CYAN, RESET);

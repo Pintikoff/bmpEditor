@@ -210,32 +210,38 @@ void addFrame(InfoHeader *infoHeader, Pixel ***pixelMap, uint32_t frameWidth, ui
     infoHeader->width = newWidth;
 }
 
-void changeTint(InfoHeader* infoHeader, Pixel **pixelMap, char tintColorString, uint8_t tintValue){
+void changeTint(InfoHeader* infoHeader, Pixel **pixelMap, char tintColorString, int16_t tintValue){
     char tintColor = tintColorString;
     if(tintColor != 'b' && tintColor != 'g' && tintColor != 'r'){
         printf("ERROR: Invalid tint color value (b, g or r)");
         return;
     } 
-    if((int)tintValue > 255){
-        tintValue = 255;
-    }
-    else if((int)tintValue < 0){
-        tintValue = 0;
-    }
+    if((int)tintValue > 255) tintValue = 255;
+    if((int)tintValue < -255) tintValue = -255;
     
     uint32_t width = infoHeader->width;
     uint32_t height = infoHeader->height;
     for(int y = 0; y < height; y++){
         for(int x = 0; x < width; x++){
             switch(tintColor){
+                int newValue;
                 case 'b':
-                    pixelMap[y][x].b = tintValue;
+                    newValue = pixelMap[y][x].b + tintValue;
+                    if(newValue > 255) newValue = 255;
+                    if(newValue < 0) newValue = 0;
+                    pixelMap[y][x].b = (uint8_t)newValue;
                     break;
                 case 'g':
-                    pixelMap[y][x].g = tintValue;
+                    newValue = pixelMap[y][x].g + tintValue;
+                    if(newValue > 255) newValue = 255;
+                    if(newValue < 0) newValue = 0;
+                    pixelMap[y][x].g = (uint8_t)newValue;
                     break;
                 case 'r':
-                    pixelMap[y][x].r = tintValue;
+                    newValue = pixelMap[y][x].r + tintValue;
+                    if(newValue > 255) newValue = 255;
+                    if(newValue < 0) newValue = 0;
+                    pixelMap[y][x].r = (uint8_t)newValue;
                     break;
             }   
         }
