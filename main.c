@@ -36,8 +36,12 @@
     * int checkFileType(Header* header, InfoHeader* infoHeader);
 */
 
-int main(int argc, char *argv[]) {    
-
+int main(int argc, char *argv[]) { 
+    if(argc > 1 && (strcmp(argv[1], "-h") == 0 || strcmp(argv[1], "--help") == 0)){
+        printHelp();
+        return 0;
+    }
+    
     printf("=== PROGRAM START ===\n");
     printf("argc = %d\n", argc);
     for(int i = 0; i < argc; i++){
@@ -171,11 +175,6 @@ int main(int argc, char *argv[]) {
             zoom(infoHeader, &pixelMap, atoi(argv[2]));
         }
         writeNewFile(header, infoHeader, pixelMap);
-    }
-    else if(strcmp(argv[1], "-h") == 0 || strcmp(argv[1], "--help") == 0){
-        printHelp();
-        cleanMem(header, infoHeader, NULL, pixelMap);
-        return 0;
     }
     else if(strcmp(argv[1], "-test") == 0){
 
