@@ -3,6 +3,9 @@
 #include <stdlib.h>
 #include "bmp_structs.h"
 
+//! *** -variable address
+//! ** - array adress 
+
 Pixel** allocate2DPixelArray(int height, int width) {
     Pixel **array = malloc(height * sizeof(Pixel*));
     if (array == NULL) {
@@ -14,7 +17,6 @@ Pixel** allocate2DPixelArray(int height, int width) {
         array[i] = malloc(width * sizeof(Pixel));
         if (array[i] == NULL) {
             perror("malloc failed for columns");
-            // Освободить уже выделенное
             for (int j = 0; j < i; j++) {
                 free(array[j]);
             }
@@ -27,6 +29,12 @@ Pixel** allocate2DPixelArray(int height, int width) {
 }
 
 void mirrorX(InfoHeader *infoHeader, Pixel** pixelMap){
+    /*
+    ** pixelMap - array address.
+    We dont need "*** pixelMap" because we are not REPLACING
+    pixelMap variable itself,
+    only MODIFYING its content.
+    */
     uint32_t width = infoHeader->width;
     uint32_t height = infoHeader->height;
     Pixel* tempRow;
@@ -36,6 +44,7 @@ void mirrorX(InfoHeader *infoHeader, Pixel** pixelMap){
         pixelMap[y] = pixelMap[(height-1) - y];
         pixelMap[(height-1) - y] = tempRow;
     }
+    printf("MIRROR-X: Image mirrored");
 }
 
 void mirrorY(InfoHeader *infoHeader, Pixel** pixelMap){
@@ -50,6 +59,7 @@ void mirrorY(InfoHeader *infoHeader, Pixel** pixelMap){
             pixelMap[y][(width-1) - x] = tempCol;
         }
     }
+    printf("MIRROR-Y: Image mirrored");
 }
 
 void rotate90(InfoHeader *infoHeader, Pixel*** pixelMap){
@@ -57,17 +67,24 @@ void rotate90(InfoHeader *infoHeader, Pixel*** pixelMap){
     uint32_t height = infoHeader->height;
 
     Pixel** newPixelMap = allocate2DPixelArray(width, height);
+    if(newPixelMap == NULL){
+        printf("ERROR: Failed to allocate memory for zoom\n");
+        return;
+    }
+    printf("ROTATE90: newPixelMap created");
     //copying rotated pixelMap into a newPixelMap
     for(int y = 0; y < height; y++){
         for(int x = 0; x < width; x++){
             newPixelMap[width - 1 -x][y] = (*pixelMap)[y][x];
         }
     }
+    printf("RATATE90: newPixelMap filled");
     //free old pixelMap
     for(int i = 0; i < height; i++){
         free((*pixelMap)[i]);
     }
     free(*pixelMap);
+    printf("SHRINK: free pixelMap");
 
     *pixelMap = newPixelMap;
     infoHeader->width = height;
@@ -84,17 +101,24 @@ void rotate270(InfoHeader *infoHeader, Pixel*** pixelMap){
     uint32_t height = infoHeader->height;
 
     Pixel** newPixelMap = allocate2DPixelArray(width, height);
+    if(newPixelMap == NULL){
+        printf("ERROR: Failed to allocate memory for zoom\n");
+        return;
+    }
+    printf("ROTATE270: newPixelMap created");
     //copying rotated pixelMap into a newPixelMap
     for(int y = 0; y < height; y++){
         for(int x = 0; x < width; x++){
             newPixelMap[x][height - 1 - y] = (*pixelMap)[y][x];
         }
     }
+    printf("ROTATE270: newPixelMap filled");
     //free old pixelMap
     for(int i = 0; i < height; i++){
         free((*pixelMap)[i]);
     }
     free(*pixelMap);
+    printf("ROTATE270: free pixelMap");
 
     *pixelMap = newPixelMap;
     infoHeader->width = height;
@@ -114,16 +138,17 @@ void snapImage(InfoHeader *infoHeader, Pixel ***pixelMap, uint32_t startX, uint3
         return;
     }
 
-    //rotating
+    //*rotating coordinates
     startY = height - startY - 1;
     endY = height - endY - 1;
-    //swap
+    //swap so endX is bigger than startX
     if (endX < startX) {
         int tempX;
         tempX = startX;
         startX = endX;
         endX = tempX;
     }
+    //swap so endY is bigger than startY
     if (endY < startY) {
         int tempY;
         tempY = startY;
@@ -133,20 +158,28 @@ void snapImage(InfoHeader *infoHeader, Pixel ***pixelMap, uint32_t startX, uint3
     //determine new size
     uint32_t newHeight = endY - startY + 1;
     uint32_t newWidth = endX - startX + 1;
+    printf("CROP: newWidth %d\n", newWidth);
+    printf("CROP: newHeight %d\n", newHeight);
 
     Pixel** newPixelMap = allocate2DPixelArray(newHeight, newWidth);
+    if(newPixelMap == NULL){
+        printf("ERROR: Failed to allocate memory for zoom\n");
+        return;
+    }
+    printf("CROP: newPixelMap created");
     //copy snaped pixelMap into a newPixelMap
     for (int y = 0; y < newHeight; y++) {
         for (int x = 0; x < newWidth; x++) {
             newPixelMap[y][x] = (*pixelMap)[startY + y][startX + x];
         }
     }
-
+    printf("CROP: newPixelMap filled");
     //free old pixelMap
     for (int i = 0; i < height; i++) {
         free((*pixelMap)[i]);
     }
     free(*pixelMap);
+    printf("CROP: free pixelMap");
 
     *pixelMap = newPixelMap;
     infoHeader->height = newHeight;
@@ -173,9 +206,11 @@ void addFrame(InfoHeader *infoHeader, Pixel ***pixelMap, uint32_t frameWidth, ui
     //determine new size
     uint32_t newWidth = width + (frameWidth * 2);
     uint32_t newHeight = height + (frameWidth * 2);
-    printf("Size determined\n");
+    printf("FRAME: newWidth %d\n", newWidth);
+    printf("FRAME: newHeight %d\n", newHeight);
+
     Pixel** newPixelMap = allocate2DPixelArray(newHeight, newWidth);
-    printf("mem allocated\n");
+    printf("FRAME: newPixelMap created");
     for(int y = 0; y < newHeight; y++){
         if(y < frameWidth || y >= frameWidth + height){
             for(int x = 0; x < newWidth; x++){
@@ -199,12 +234,12 @@ void addFrame(InfoHeader *infoHeader, Pixel ***pixelMap, uint32_t frameWidth, ui
             }
         }
     }
-    printf("2d array filled");
+    printf("FRAME: newPixelMap filled");
     for (int i = 0; i < height; i++) {
         free((*pixelMap)[i]);
     }
     free(*pixelMap);
-
+    printf("FRAME: free pixelMap");
     *pixelMap = newPixelMap;
     infoHeader->height = newHeight;
     infoHeader->width = newWidth;
@@ -229,18 +264,21 @@ void changeTint(InfoHeader* infoHeader, Pixel **pixelMap, char tintColorString, 
                     newValue = pixelMap[y][x].b + tintValue;
                     if(newValue > 255) newValue = 255;
                     if(newValue < 0) newValue = 0;
+                    printf("TINT: newValue: %d", newValue);
                     pixelMap[y][x].b = (uint8_t)newValue;
                     break;
                 case 'g':
                     newValue = pixelMap[y][x].g + tintValue;
                     if(newValue > 255) newValue = 255;
                     if(newValue < 0) newValue = 0;
+                    printf("TINT: newValue: %d", newValue);
                     pixelMap[y][x].g = (uint8_t)newValue;
                     break;
                 case 'r':
                     newValue = pixelMap[y][x].r + tintValue;
                     if(newValue > 255) newValue = 255;
                     if(newValue < 0) newValue = 0;
+                    printf("TINT: newValue: %d", newValue);
                     pixelMap[y][x].r = (uint8_t)newValue;
                     break;
             }   
@@ -261,6 +299,9 @@ void zoom(InfoHeader* infoHeader, Pixel ***pixelMap, uint32_t zoomValue){
     
     uint32_t newWidth = width * zoomValue;
     uint32_t newHeight = height * zoomValue;
+    printf("ZOOM: newWidth %d\n", newWidth);
+    printf("ZOOM: newHeight %d\n", newHeight);
+
     if(newHeight > UINT32_MAX / 2|| newWidth > UINT32_MAX / 2){
         printf("ERROR: Resolution is too high");
         return;
@@ -271,6 +312,7 @@ void zoom(InfoHeader* infoHeader, Pixel ***pixelMap, uint32_t zoomValue){
         printf("ERROR: Failed to allocate memory for zoom\n");
         return;
     }
+    printf("ZOOM: newPixelMap created");
     //fill newPixelMap
     for(int y = 0; y < newHeight; y++){
         /*
@@ -285,11 +327,13 @@ void zoom(InfoHeader* infoHeader, Pixel ***pixelMap, uint32_t zoomValue){
             newPixelMap[y][x] = (*pixelMap)[srcY][srcX];
         }
     }
-
+    printf("ZOOM: newPixelMap filled");
+    
     for(int i = 0; i < height; i++){
         free((*pixelMap)[i]);
     }
     free(*pixelMap);
+    printf("SHRINK: free pixelMap");
 
     *pixelMap = newPixelMap;
     infoHeader->height = newHeight;
