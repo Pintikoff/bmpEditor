@@ -141,7 +141,7 @@ int main(int argc, char *argv[]) {
         }
         writeNewFile(header, infoHeader, pixelMap);
     }
-    else if (strcmp(argv[1], "-s") == 0 || strcmp(argv[1], "--snap") == 0) {
+    else if (strcmp(argv[1], "-c") == 0 || strcmp(argv[1], "--crop") == 0) {
         if(argc < 6){
             printf("ERROR: Snap requires 4 coordinate arguments (startX startY endX endY)\n");
             cleanMem(header, infoHeader, NULL, pixelMap);
@@ -176,8 +176,12 @@ int main(int argc, char *argv[]) {
         }
         writeNewFile(header, infoHeader, pixelMap);
     }
-    else if(strcmp(argv[1], "-test") == 0){
+    else if(strcmp(argv[1], "-s") == 0 || strcmp(argv[1], "--shrink") == 0){
+        shrink(infoHeader, &pixelMap);
+        writeNewFile(header, infoHeader, pixelMap);
+    }
 
+    else if(strcmp(argv[1], "-test") == 0){
     }
     else{
         printf("ERROR: Unknown command '%s'. Use -h for help\n", argv[1]);
@@ -186,5 +190,5 @@ int main(int argc, char *argv[]) {
     }
     cleanMem(header, infoHeader, NULL, pixelMap);
     return 0;
-    //update help page
+    //TODO: update help page
 }

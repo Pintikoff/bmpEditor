@@ -3,15 +3,15 @@
 #include <stdlib.h>
 #include "bmp_structs.h"
 
-Pixel** allocate2DPixelArray(int rows, int cols) {
-    Pixel **array = malloc(rows * sizeof(Pixel*));
+Pixel** allocate2DPixelArray(int height, int width) {
+    Pixel **array = malloc(height * sizeof(Pixel*));
     if (array == NULL) {
-        perror("malloc failed for rows");
+        perror("malloc failed for height");
         return NULL;
     }
     
-    for (int i = 0; i < rows; i++) {
-        array[i] = malloc(cols * sizeof(Pixel));
+    for (int i = 0; i < height; i++) {
+        array[i] = malloc(width * sizeof(Pixel));
         if (array[i] == NULL) {
             perror("malloc failed for columns");
             // Освободить уже выделенное
@@ -258,30 +258,108 @@ void zoom(InfoHeader* infoHeader, Pixel ***pixelMap, uint32_t zoomValue){
     if(zoomValue == 0){
         zoomValue = 2;
     }
-    if(height > UINT32_MAX / 2|| width > UINT32_MAX / 2){
+    
+    uint32_t newWidth = width * zoomValue;
+    uint32_t newHeight = height * zoomValue;
+    if(newHeight > UINT32_MAX / 2|| newWidth > UINT32_MAX / 2){
         printf("ERROR: Resolution is too high");
         return;
     }
-    uint32_t newWidth = width * zoomValue;
-    uint32_t newHeight = height * zoomValue;
+    
     Pixel** newPixelMap = allocate2DPixelArray(newHeight, newWidth);
     if(newPixelMap == NULL){
         printf("ERROR: Failed to allocate memory for zoom\n");
         return;
     }
+    //fill newPixelMap
     for(int y = 0; y < newHeight; y++){
+        /*
+        * coords in source image
+        * Example:
+        *    y = 2, zoomValue = 3,
+        *    src = y/zoomValue -> 2/3 = 0.66 = 0
+        */
         uint32_t srcY = y/zoomValue;
         for(int x = 0; x < newWidth; x++){
             uint32_t srcX = x/zoomValue;
             newPixelMap[y][x] = (*pixelMap)[srcY][srcX];
         }
     }
+
     for(int i = 0; i < height; i++){
         free((*pixelMap)[i]);
     }
     free(*pixelMap);
+
     *pixelMap = newPixelMap;
     infoHeader->height = newHeight;
     infoHeader->width = newWidth;
 }
-//zoom: x0.5
+
+void shrink(InfoHeader* infoHeader, Pixel ***pixelMap){
+    uint32_t width = infoHeader->width;
+    uint32_t height = infoHeader->height;
+    uint32_t newWidth = (width + (width % 2)) / 2;
+    uint32_t newHeight = (height + (height % 2)) / 2; 
+    printf("SHRINK: newWidth %d\n", newWidth);
+    printf("SHRINK: newHeight %d\n", newHeight);
+    
+    Pixel** newPixelMap = allocate2DPixelArray(newHeight, newWidth);
+    if(newPixelMap == NULL){
+        printf("ERROR: Failed to allocate memory for zoom\n");
+        return;
+    }
+    printf("SHRINK: newPixelMap created");
+    /*
+    ?In this loop:
+    *Find coords in sourche image ([0][0] = [0] [0]; [1][0] = [2][0])
+    *Devide source map into 2x2 grids
+    *Count average color values in a gri
+    *Fill a newPixelMap
+    */
+    for(int newY = 0; newY < newHeight; newY++){
+        for(int newX = 0; newX < newWidth; newX++){
+            //coords in source image
+            uint32_t srcY = newY * 2;
+            uint32_t srcX = newX * 2;
+            int sumB = 0, sumG = 0, sumR = 0;
+            int count = 0; //count of valid pixels
+            //count avg color in a 2x2 grid
+            for(int gridY = 0; gridY < 2; gridY++){
+                for(int gridX = 0; gridX < 2; gridX++){
+                    int y = srcY + gridY;
+                    int x = srcX + gridX;
+                    /*
+                    * Boundary check for source pixel coordinates
+                    * Prevents reading beyond original image dimensions
+                    * 
+                    * Example: 3×2 original → 6×4 zoomed (2x)
+                    ?   newPixel[1][5] maps to srcPixel[0][2] TRUE
+                    ?   newPixel[3][5] maps to srcPixel[1][2] TRUE
+                    !   newPixel[4][0] maps to srcPixel[2][0] FALSE (2 >= height=2, skip)
+                    */
+                    // Skip if source coordinates exceed original image bounds
+                    if(y < height && x < width){
+                        sumB += (*pixelMap)[y][x].b;
+                        sumG += (*pixelMap)[y][x].g;
+                        sumR += (*pixelMap)[y][x].r;
+                        count++;
+                    }
+                }
+            } 
+            newPixelMap[newY][newX].b = sumB / count;
+            newPixelMap[newY][newX].g = sumG / count;
+            newPixelMap[newY][newX].r = sumR / count;
+        }
+    }
+    printf("newPixelMap filled");
+    for(int i = 0; i < height; i++){
+        free((*pixelMap)[i]);
+    }
+    printf("SHRINK: newPixelMap filled");
+    free(*pixelMap);
+    printf("SHRINK: free pixelMap");
+    *pixelMap = newPixelMap;
+    infoHeader->height = newHeight;
+    infoHeader->width = newWidth;
+}

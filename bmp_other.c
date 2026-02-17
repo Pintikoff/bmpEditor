@@ -49,7 +49,7 @@ void writeNewFile(Header *header, InfoHeader *infoHeader, Pixel** pixelMap){
         }
     }
     fclose(file);
-    printf("File '%s' has been created\n", fileName);
+    printf("File '%s.bmp' has been created\n", fileName);
 };
 
 void printHelp() {
@@ -88,11 +88,11 @@ void printHelp() {
     printf("      %sExample:%s %s./bmp_editor -r 90%s\n\n", YELLOW, RESET, CYAN, RESET);
     
     // Snap/Crop
-    printf("  %s-s, --snap%s <startX> <startY> <endX> <endY>\n", GREEN, RESET);
+    printf("  %s-c, --crop%s <startX> <startY> <endX> <endY>\n", GREEN, RESET);
     printf("      Crop image to specified rectangle\n");
     printf("      %sParameters:%s\n", YELLOW, RESET);
     printf("        Coordinates of top-left and bottom-right corners\n");
-    printf("      %sExample:%s %s./bmp_editor -s 10 10 100 100%s\n\n", YELLOW, RESET, CYAN, RESET);
+    printf("      %sExample:%s %s./bmp_editor -c 10 10 100 100%s\n\n", YELLOW, RESET, CYAN, RESET);
     
     // Frame
     printf("  %s-f, --frame%s <width> <R> <G> <B>\n", GREEN, RESET);
@@ -132,7 +132,7 @@ void printHelp() {
     printf("%sEXAMPLES:%s\n", BOLD, RESET);
     printf("  %s./bmp_editor -m y%s           Mirror vertically\n", CYAN, RESET);
     printf("  %s./bmp_editor -r 180%s         Rotate 180 degrees\n", CYAN, RESET);
-    printf("  %s./bmp_editor -s 0 0 50 50%s   Crop to 50x50 from top-left\n", CYAN, RESET);
+    printf("  %s./bmp_editor -c 0 0 50 50%s   Crop to 50x50 from top-left\n", CYAN, RESET);
     printf("  %s./bmp_editor -f 10 0 255 0%s  Add green 10px frame\n", CYAN, RESET);
     printf("  %s./bmp_editor -t b -30%s       Decrease blue channel\n", CYAN, RESET);
     printf("  %s./bmp_editor -z 4%s           Zoom 4x\n\n", CYAN, RESET);

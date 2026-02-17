@@ -15,4 +15,5 @@ void snapImage(InfoHeader *infoHeader, Pixel ***pixelMap, int startX, int startY
 void addFrame(InfoHeader *infoHeader, Pixel ***pixelMap, uint32_t frameWidth, uint8_t frameR, uint8_t frameG, uint8_t frameB);
 void changeTint(InfoHeader* infoHeader, Pixel **pixelMap, char tintColorString, int16_t tintValue);
 void zoom(InfoHeader* infoHeader, Pixel ***pixelMap, uint32_t zoomValue);
+void shrink(InfoHeader* infoHeader, Pixel ***pixelMap);
 #endif 
