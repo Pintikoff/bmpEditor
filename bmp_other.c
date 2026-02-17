@@ -118,6 +118,13 @@ void printHelp() {
     printf("        %sfactor%s   - custom zoom factor\n", MAGENTA, RESET);
     printf("      %sExample:%s %s./bmp_editor -z%s (2x zoom)\n", YELLOW, RESET, CYAN, RESET);
     printf("                %s./bmp_editor -z 3%s (3x zoom)\n\n", CYAN, RESET);
+
+    // Shrink 
+    printf("  %s-s, --shrink%s\n", GREEN, RESET);
+    printf("      Shrink the image by half (downsample)\n");
+    printf("      %sParameters:%s none (automatic 2x reduction)\n", YELLOW, RESET);
+    printf("      %sNote:%s Uses averaging of 2×2 pixel blocks for quality\n", YELLOW, RESET);
+    printf("      %sExample:%s %s./bmp_editor -s%s (shrink to 50%%)\n\n", YELLOW, RESET, CYAN, RESET);
     
     // Help
     printf("  %s-h, --help%s\n", GREEN, RESET);
@@ -136,6 +143,7 @@ void printHelp() {
     printf("  %s./bmp_editor -f 10 0 255 0%s  Add green 10px frame\n", CYAN, RESET);
     printf("  %s./bmp_editor -t b -30%s       Decrease blue channel\n", CYAN, RESET);
     printf("  %s./bmp_editor -z 4%s           Zoom 4x\n\n", CYAN, RESET);
+    printf("  %s./bmp_editor -s%s             Shrink to 50%% (reduce)\n\n", CYAN, RESET);
 }
 
 void outPutStructTemp(Header* header, InfoHeader* infoHeader){
