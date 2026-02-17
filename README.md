@@ -29,7 +29,7 @@ gcc compile.c -o compile
 ### Manual compilation
 
 ```bash
-gcc -o bmp_editor main.c [other_required_files.c]
+gcc -o bmp_editor main.c bmp_edit.c bmp_read.c bmp_other.c
 ```
 
 ## Usage
