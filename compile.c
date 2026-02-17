@@ -4,7 +4,7 @@
 void compileProject() {
     printf("Compiling...\n");
 
-    int result = system("gcc main.c bmp_read.c bmp_edit.c bmp_other.c -o ./main.exe");
+    int result = system("gcc main.c bmp_read.c bmp_edit.c bmp_other.c -o ./bmp_editor.exe");
 
     if (result == 0) {
         printf("SUCCESS: Files complied \n");
