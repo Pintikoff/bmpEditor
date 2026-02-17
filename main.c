@@ -42,13 +42,14 @@ int main(int argc, char *argv[]) {
         return 0;
     }
     
+    /*
     printf("=== PROGRAM START ===\n");
     printf("argc = %d\n", argc);
     for(int i = 0; i < argc; i++){
         printf("argv[%d] = '%s'\n", i, argv[i]);
     }
     printf("=====================\n\n");
-
+    */
 
     char link[512];
     Header* header;
@@ -58,9 +59,6 @@ int main(int argc, char *argv[]) {
     
     printf("Enter a link to a bmp file: \n");
     scanf("%511s", link);
-        
-    strcpy(link, "C:/Users/petro/OneDrive/Documents/codeVS/C/bmpEditor/2by3.bmp"); //Win
-    //strcpy(link, "/home/pintikoff/Code/emacs/hashImages/2by3.bmp"); //Linux
     
     header = malloc(sizeof(Header));
     if(!header){
@@ -96,10 +94,12 @@ int main(int argc, char *argv[]) {
         return 1;
     }
     
+
     if(argc == 1){
         outPutStructTemp(header, infoHeader);
         outputPixels(infoHeader, pixelMap);
     }
+
     else if(strcmp(argv[1], "-m") == 0 || strcmp(argv[1], "--mirror") == 0){
         if (argc < 3) {
             printf("ERROR: Mirror requires axis argument (x or y)\n");
@@ -118,6 +118,7 @@ int main(int argc, char *argv[]) {
         }
         writeNewFile(header, infoHeader, pixelMap);
     } 
+
     else if(strcmp(argv[1], "-r") == 0 || strcmp(argv[1], "--rotate") == 0){
         if (argc < 3) {
             printf("ERROR: Rotate requires angle argument (90, 180, or 270)\n");
@@ -141,6 +142,7 @@ int main(int argc, char *argv[]) {
         }
         writeNewFile(header, infoHeader, pixelMap);
     }
+
     else if (strcmp(argv[1], "-c") == 0 || strcmp(argv[1], "--crop") == 0) {
         if(argc < 6){
             printf("ERROR: Snap requires 4 coordinate arguments (startX startY endX endY)\n");
@@ -150,6 +152,7 @@ int main(int argc, char *argv[]) {
         snapImage(infoHeader, &pixelMap, atoi(argv[2]), atoi(argv[3]), atoi(argv[4]), atoi(argv[5]));
         writeNewFile(header, infoHeader, pixelMap);
     }
+
     else if(strcmp(argv[1], "-f") == 0 || strcmp(argv[1], "--frame") == 0){
         if(argc < 6){
             printf("ERROR: Frame requires 4 arguments (width R G B)\n");
@@ -159,6 +162,7 @@ int main(int argc, char *argv[]) {
         addFrame(infoHeader, &pixelMap, atoi(argv[2]), atoi(argv[3]), atoi(argv[4]), atoi(argv[5]));
         writeNewFile(header, infoHeader, pixelMap);
     }
+
     else if(strcmp(argv[1], "-t") == 0 || strcmp(argv[1], "--tint") == 0){
         if(argc < 4){
             printf("ERROR: Change tint requires 2 arguments (color, color value)");
@@ -168,6 +172,7 @@ int main(int argc, char *argv[]) {
         changeTint(infoHeader, pixelMap, argv[2][0], atoi(argv[3]));
         writeNewFile(header, infoHeader, pixelMap);
     }
+
     else if(strcmp(argv[1], "-z") == 0 || strcmp(argv[1], "--zoom") == 0){
         if(argc == 2){
             zoom(infoHeader, &pixelMap, 0);
@@ -176,6 +181,7 @@ int main(int argc, char *argv[]) {
         }
         writeNewFile(header, infoHeader, pixelMap);
     }
+
     else if(strcmp(argv[1], "-s") == 0 || strcmp(argv[1], "--shrink") == 0){
         shrink(infoHeader, &pixelMap);
         writeNewFile(header, infoHeader, pixelMap);
@@ -183,12 +189,14 @@ int main(int argc, char *argv[]) {
 
     else if(strcmp(argv[1], "-test") == 0){
     }
+
     else{
         printf("ERROR: Unknown command '%s'. Use -h for help\n", argv[1]);
         cleanMem(header, infoHeader, NULL, pixelMap);
         return 1;
     }
+
+    
     cleanMem(header, infoHeader, NULL, pixelMap);
     return 0;
-    //TODO: update help page
 }
