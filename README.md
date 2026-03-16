@@ -35,7 +35,7 @@ gcc -o bmp_editor main.c bmp_edit.c bmp_read.c bmp_other.c
 ## Usage
 
 ```bash
-./bmp_editor [operation] [parameters]
+./bmp_editor.exe [operation] [parameters]
 ```
 
 ## Operations
